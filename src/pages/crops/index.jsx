@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import EvervaultCard from '../../components/ui/EvervaultCard';
+import Navbar from '../../components/Navbar';
 
 export default function CropWiki() {
   const [allCrops, setAllCrops] = useState([]);
@@ -26,7 +27,7 @@ export default function CropWiki() {
     const fetchCrops = async () => {
       setLoading(true);
       try {
-        const res = await fetch('/api/crops');
+        const res = await fetch('/crops.json');
         const data = await res.json();
         setAllCrops(data);
         setFilteredCrops(data);
@@ -66,7 +67,7 @@ export default function CropWiki() {
 
   return (
     <div className="bg-white min-h-screen font-sans text-gray-900">
-      <style jsx global>{`
+      <style>{`
         .glass-nav {
           background: rgba(255,255,255,0.92);
           backdrop-filter: blur(16px);
@@ -76,27 +77,7 @@ export default function CropWiki() {
       `}</style>
 
       {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 h-14 flex items-center justify-between px-8 glass-nav">
-        <div className="flex items-center gap-8 flex-1">
-          <Link href="/crops" className="text-gray-900 font-black text-xl tracking-tight">Croporia</Link>
-          <div className="relative w-full max-w-xs hidden md:block">
-            <span className="absolute inset-y-0 left-3 flex items-center text-sm text-gray-400">🔍</span>
-            <input
-              type="text"
-              placeholder="Search crops..."
-              className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-4 py-1.5 text-sm focus:ring-2 focus:ring-green-600 focus:border-green-600 outline-none transition-all"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="flex items-center gap-8 text-[11px] font-bold text-gray-500 uppercase tracking-widest">
-          <Link href="/crops" className="text-green-700 border-b-2 border-green-700 pb-0.5">Wiki</Link>
-          <Link href="/practices" className="hover:text-green-700 transition-colors">Practices</Link>
-          <a href="#" className="hover:text-green-700 transition-colors">My Farm</a>
-          <a href="#" className="hover:text-green-700 transition-colors">Community</a>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* HERO — compact */}
       <section className="bg-gray-900 border-b border-gray-800">
@@ -109,7 +90,7 @@ export default function CropWiki() {
             Real costs. Real conditions. No guesswork. 43 Indian crops — all in one place.
           </p>
           {/* Category pill filters */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-4 relative z-10">
             {categories.map((cat) => (
               <button
                 key={cat}
@@ -151,7 +132,7 @@ export default function CropWiki() {
                 {/* Grid with EvervaultCard hover-reveal */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {groupedCrops[catName].map((crop) => (
-                    <Link key={crop.slug} href={`/crops/${crop.slug}`}>
+                    <Link key={crop.slug} to={`/crops/${crop.slug}`}>
                       <EvervaultCard
                         accentColor={meta.color}
                         className="h-full"

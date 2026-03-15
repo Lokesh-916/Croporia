@@ -1,10 +1,9 @@
-import { useRouter } from 'next/router';
+import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 
 export default function CropDetail() {
-  const router = useRouter();
-  const { slug } = router.query;
+  const { slug } = useParams();
   const [crop, setCrop] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -13,10 +12,11 @@ export default function CropDetail() {
     const fetchCrop = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/crops/${slug}`);
-        if (res.status === 200) {
+        const res = await fetch(`/crops.json`);
+        if (res.ok) {
           const data = await res.json();
-          setCrop(data);
+          const found = data.find(c => c.slug === slug);
+          setCrop(found || null);
         } else {
           setCrop(null);
         }
@@ -39,7 +39,7 @@ export default function CropDetail() {
     <div className="min-h-screen bg-[#FDFCFB] flex flex-col items-center justify-center p-10">
       <h1 className="text-4xl font-black text-gray-300 mb-4">404</h1>
       <p className="text-gray-500 mb-8 font-medium">Crop not found in this patch.</p>
-      <Link href="/crops" className="bg-[#2D5A27] text-white px-8 py-3 rounded-full font-bold shadow-lg">
+      <Link to="/crops" className="bg-[#2D5A27] text-white px-8 py-3 rounded-full font-bold shadow-lg">
         Back to Wiki
       </Link>
     </div>
@@ -69,7 +69,7 @@ export default function CropDetail() {
         </div>
 
         <div className="max-w-6xl mx-auto relative z-10">
-          <Link href="/crops" className="inline-flex items-center text-white/70 hover:text-white font-bold mb-10 transition-colors group">
+          <Link to="/crops" className="inline-flex items-center text-white/70 hover:text-white font-bold mb-10 transition-colors group">
             <svg className="w-6 h-6 mr-3 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>

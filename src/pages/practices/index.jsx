@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 
 const PRACTICES = {
   traditional: {
@@ -77,7 +77,7 @@ function costSymbol(c) {
 function PracticeCard({ practice, cat }) {
   const diff = difficultyStyle(practice.difficulty);
   return (
-    <Link href={`/practices/${toSlug(practice.name)}`}>
+    <Link to={`/practices/${toSlug(practice.name)}`}>
       <div
         className="bg-white rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-md flex flex-col h-full"
         style={{ border: `1.5px solid ${cat.cardBorder}30` }}
@@ -101,6 +101,8 @@ function PracticeCard({ practice, cat }) {
   );
 }
 
+import Navbar from '../../components/Navbar';
+
 export default function PracticesIndex() {
   const bannerRefs = useRef([]);
 
@@ -120,7 +122,7 @@ export default function PracticesIndex() {
 
   return (
     <div className="bg-white min-h-screen font-sans text-gray-900">
-      <style jsx global>{`
+      <style>{`
         .glass-nav {
           background: rgba(255,255,255,0.92);
           backdrop-filter: blur(16px);
@@ -130,15 +132,7 @@ export default function PracticesIndex() {
       `}</style>
 
       {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 h-14 flex items-center justify-between px-8 glass-nav">
-        <Link href="/crops" className="text-gray-900 font-black text-xl tracking-tight">Croporia</Link>
-        <div className="flex items-center gap-8 text-[11px] font-bold text-gray-500 uppercase tracking-widest">
-          <Link href="/crops" className="hover:text-green-700 transition-colors">Wiki</Link>
-          <Link href="/practices" className="text-green-700 border-b-2 border-green-700 pb-0.5">Practices</Link>
-          <a href="#" className="hover:text-green-700 transition-colors">My Farm</a>
-          <a href="#" className="hover:text-green-700 transition-colors">Community</a>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* HERO — compact dark header */}
       <section className="bg-gray-900 border-b border-gray-800">

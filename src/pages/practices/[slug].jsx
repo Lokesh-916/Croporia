@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { Link, useParams } from 'react-router-dom';
 import TracingBeam from '../../components/ui/TracingBeam';
 
 // ─── Shared Data ────────────────────────────────────────────────────────────
@@ -75,8 +74,7 @@ function costSymbol(c) {
 }
 
 export default function PracticeDetail() {
-  const router = useRouter();
-  const { slug } = router.query;
+  const { slug } = useParams();
 
   if (!slug) return null;
 
@@ -86,7 +84,7 @@ export default function PracticeDetail() {
       <div className="min-h-screen bg-[#fafaf7] flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-3xl font-black text-[#1a3d0a] mb-4">Practice not found</h1>
-          <Link href="/practices" className="text-[#c8882a] font-bold underline">← Back to Practices</Link>
+          <Link to="/practices" className="text-[#c8882a] font-bold underline">← Back to Practices</Link>
         </div>
       </div>
     );
@@ -101,7 +99,7 @@ export default function PracticeDetail() {
 
   return (
     <div className="bg-[#fafaf7] min-h-screen font-sans">
-      <style jsx global>{`
+      <style>{`
         .glass-nav {
           background: rgba(255,255,255,0.85);
           backdrop-filter: blur(18px);
@@ -113,11 +111,11 @@ export default function PracticeDetail() {
       {/* NAVBAR */}
       <nav className="sticky top-0 z-50 h-[56px] flex items-center justify-between px-8 glass-nav">
         <div className="flex items-center gap-12 flex-1">
-          <Link href="/crops" className="text-[#2a1f14] font-black text-2xl tracking-tighter font-serif italic">Croporia</Link>
+          <Link to="/crops" className="text-[#2a1f14] font-black text-2xl tracking-tighter font-serif italic">Croporia</Link>
         </div>
         <div className="flex items-center gap-10 text-[10px] font-bold text-[#6b4e35] uppercase tracking-[0.2em]">
-          <Link href="/crops" className="hover:text-[#c8882a] transition-colors">Wiki</Link>
-          <Link href="/practices" className="text-[#1a3d0a] border-b border-[#1a3d0a] pb-0.5">Practices</Link>
+          <Link to="/crops" className="hover:text-[#c8882a] transition-colors">Wiki</Link>
+          <Link to="/practices" className="text-[#1a3d0a] border-b border-[#1a3d0a] pb-0.5">Practices</Link>
           <a href="#" className="hover:text-[#c8882a] transition-colors">My Farm</a>
           <a href="#" className="hover:text-[#c8882a] transition-colors">Community</a>
         </div>
@@ -125,7 +123,7 @@ export default function PracticeDetail() {
 
       <div className="max-w-4xl mx-auto px-8 py-12">
         {/* Back button */}
-        <Link href="/practices" className="inline-flex items-center gap-2 text-[12px] font-bold text-[#6b7280] hover:text-[#1a3d0a] transition-colors mb-8 uppercase tracking-wider">
+        <Link to="/practices" className="inline-flex items-center gap-2 text-[12px] font-bold text-[#6b7280] hover:text-[#1a3d0a] transition-colors mb-8 uppercase tracking-wider">
           <span>←</span> Back to Practices
         </Link>
 
@@ -175,9 +173,7 @@ export default function PracticeDetail() {
               <h2 className="text-xl font-black text-[#1a3d0a] mb-4 tracking-tight">Works best with</h2>
               <div className="flex flex-wrap gap-2">
                 {practice.appliesTo.map((crop) => (
-                  <Link
-                    key={crop}
-                    href={crop === 'All crops' ? '/crops' : `/crops/${crop.toLowerCase()}`}
+                  <Link to={crop === 'All crops' ? '/crops' : `/crops/${crop.toLowerCase()}`}
                     className="px-4 py-1.5 rounded-full text-[12px] font-bold transition-all hover:opacity-80"
                     style={{ backgroundColor: catMeta.bg, color: catMeta.color, border: `1.5px solid ${catMeta.color}40` }}
                   >
@@ -235,9 +231,7 @@ export default function PracticeDetail() {
               <h2 className="text-xl font-black text-[#1a3d0a] mb-4 tracking-tight">Works best with</h2>
               <div className="flex flex-wrap gap-2">
                 {practice.appliesTo.map((crop) => (
-                  <Link
-                    key={crop}
-                    href={crop === 'All crops' ? '/crops' : `/crops/${crop.toLowerCase()}`}
+                  <Link to={crop === 'All crops' ? '/crops' : `/crops/${crop.toLowerCase()}`}
                     className="px-4 py-1.5 rounded-full text-[12px] font-bold transition-all hover:opacity-80"
                     style={{ backgroundColor: catMeta.bg, color: catMeta.color, border: `1.5px solid ${catMeta.color}40` }}
                   >
@@ -262,7 +256,7 @@ export default function PracticeDetail() {
               const pCat = CATEGORY_COLORS[p.category] || CATEGORY_COLORS.traditional;
               const pDiff = difficultyStyle(p.difficulty);
               return (
-                <Link key={p.name} href={`/practices/${toSlug(p.name)}`}>
+                <Link to={`/practices/${toSlug(p.name)}`}>
                   <div
                     className="bg-white rounded-2xl overflow-hidden cursor-pointer transition-all hover:-translate-y-1 hover:shadow-md border"
                     style={{ borderColor: `${pCat.color}30` }}
