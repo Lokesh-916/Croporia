@@ -1,0 +1,220 @@
+{
+  "courses": [
+    {
+      "id": "soil-fundamentals",
+      "title": "Soil Fundamentals",
+      "description": "Understand soil types, structure, and how to improve soil health for better yields.",
+      "icon": "🌱",
+      "stages": [
+        {
+          "id": "s1",
+          "title": "What is Soil?",
+          "lessons": [
+            {
+              "id": "l1",
+              "title": "Soil Layers Explained",
+              "content": "Soil has distinct layers: topsoil (rich in organic matter), subsoil (minerals), and bedrock. Healthy topsoil is dark and crumbly.",
+              "diagram": "soil-layers",
+              "intuition": "Think of soil like a layered cake—the top layer is what feeds your crops.",
+              "keyTakeaways": ["Topsoil holds most nutrients", "Subsoil stores water", "Bedrock is parent material"],
+              "quiz": {
+                "questions": [
+                  {
+                    "id": "q1",
+                    "question": "Which layer is richest in organic matter?",
+                    "options": ["Topsoil", "Subsoil", "Bedrock"],
+                    "correct": 0,
+                    "explanation": "Topsoil contains decomposed plant and animal matter, making it the most fertile layer."
+                  },
+                  {
+                    "id": "q2",
+                    "question": "What does subsoil mainly provide?",
+                    "options": ["Nutrients", "Water storage", "Seeds"],
+                    "correct": 1,
+                    "explanation": "Subsoil holds water and minerals that roots can draw from during dry periods."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "l2",
+              "title": "Soil Texture",
+              "content": "Soil texture depends on sand, silt, and clay proportions. Loam—a balance of all three—is ideal for most crops.",
+              "diagram": "soil-texture",
+              "intuition": "Sand drains fast, clay holds water; loam gives you the best of both.",
+              "keyTakeaways": ["Sand = quick drainage", "Clay = holds water", "Loam = balanced"],
+              "quiz": {
+                "questions": [
+                  {
+                    "id": "q1",
+                    "question": "Which soil type drains water fastest?",
+                    "options": ["Clay", "Loam", "Sand"],
+                    "correct": 2,
+                    "explanation": "Sand has large particles and large pores, so water passes through quickly."
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "s2",
+          "title": "Soil Health",
+          "lessons": [
+            {
+              "id": "l3",
+              "title": "Organic Matter",
+              "content": "Adding compost and crop residues increases organic matter. This improves water retention and nutrient availability.",
+              "diagram": "organic-matter",
+              "intuition": "More organic matter means a happier, more productive soil.",
+              "keyTakeaways": ["Compost adds nutrients", "Residues improve structure", "Earthworms love it"],
+              "quiz": {
+                "questions": [
+                  {
+                    "id": "q1",
+                    "question": "What benefit does organic matter provide?",
+                    "options": ["Only nutrients", "Water retention and nutrients", "Nothing"],
+                    "correct": 1,
+                    "explanation": "Organic matter improves both nutrient availability and the soil's ability to hold water."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "crop-planning",
+      "title": "Crop Planning",
+      "description": "Plan seasons, choose crops, and rotate for sustainable production.",
+      "icon": "📋",
+      "stages": [
+        {
+          "id": "s1",
+          "title": "Season Basics",
+          "lessons": [
+            {
+              "id": "l1",
+              "title": "Kharif vs Rabi",
+              "content": "Kharif crops are sown with monsoon (e.g. rice, maize). Rabi crops are winter crops (e.g. wheat, mustard).",
+              "diagram": "seasons",
+              "intuition": "Match your crop to the season—water and temperature matter.",
+              "keyTakeaways": ["Kharif = monsoon season", "Rabi = winter season", "Plan according to rainfall"],
+              "quiz": {
+                "questions": [
+                  {
+                    "id": "q1",
+                    "question": "When are Rabi crops typically sown?",
+                    "options": ["Monsoon", "Winter", "Summer"],
+                    "correct": 1,
+                    "explanation": "Rabi crops are winter-season crops, sown after monsoon and harvested in spring."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "irrigation-water",
+      "title": "Irrigation & Water Management",
+      "description": "Efficient water use, drip and sprinkler basics, and when to irrigate.",
+      "icon": "💧",
+      "stages": [
+        {
+          "id": "s1",
+          "title": "Water Basics",
+          "lessons": [
+            {
+              "id": "l1",
+              "title": "How Water Moves in Soil",
+              "content": "Water moves downward by gravity and upward by capillary action. Roots absorb water from the root zone.",
+              "diagram": "irrigation-flow",
+              "intuition": "Water follows the path of least resistance—design irrigation to match root depth.",
+              "keyTakeaways": ["Gravity pulls water down", "Capillary action moves water up", "Root zone is key"],
+              "quiz": {
+                "questions": [
+                  {
+                    "id": "q1",
+                    "question": "What pulls water downward in soil?",
+                    "options": ["Capillary action", "Gravity", "Roots only"],
+                    "correct": 1,
+                    "explanation": "Gravity is the main force moving water downward through soil pores."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pest-disease",
+      "title": "Pest & Disease Awareness",
+      "description": "Identify common pests and diseases and learn preventive practices.",
+      "icon": "🦗",
+      "stages": [
+        {
+          "id": "s1",
+          "title": "Recognition",
+          "lessons": [
+            {
+              "id": "l1",
+              "title": "Signs of Pest Damage",
+              "content": "Chewed leaves, holes, yellowing, and stunted growth can indicate pests. Early detection helps control spread.",
+              "diagram": "pest-damage",
+              "intuition": "Catch problems early—small damage is easier to manage than an outbreak.",
+              "keyTakeaways": ["Look for chewed leaves", "Yellowing can mean pests", "Check undersides of leaves"],
+              "quiz": {
+                "questions": [
+                  {
+                    "id": "q1",
+                    "question": "Where should you often check for pests?",
+                    "options": ["Only on top of leaves", "Undersides of leaves", "Only roots"],
+                    "correct": 1,
+                    "explanation": "Many pests hide or lay eggs on the undersides of leaves."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "farming-economics",
+      "title": "Farming Economics",
+      "description": "Costs, pricing, and simple record-keeping for better decisions.",
+      "icon": "📊",
+      "stages": [
+        {
+          "id": "s1",
+          "title": "Costs & Returns",
+          "lessons": [
+            {
+              "id": "l1",
+              "title": "Fixed vs Variable Costs",
+              "content": "Fixed costs (land, equipment) don't change with output. Variable costs (seeds, labour) do. Both matter for profit.",
+              "diagram": "economics",
+              "intuition": "Know your costs before you plant—then you know what price you need.",
+              "keyTakeaways": ["Fixed = same every season", "Variable = depends on area/crop", "Record both"],
+              "quiz": {
+                "questions": [
+                  {
+                    "id": "q1",
+                    "question": "Which cost changes with how much you grow?",
+                    "options": ["Land rent", "Variable cost", "Equipment"],
+                    "correct": 1,
+                    "explanation": "Variable costs like seeds, fertilizer, and labour increase when you grow more."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

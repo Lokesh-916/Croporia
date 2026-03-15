@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Croporia · Talk to Experts</title>
+
+    <!-- Google Fonts: Inter (body) & Pacifico (headings) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind via CDN for utilities -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              farm: {
+                leaf: '#15803d',
+                leafLight: '#bbf7d0',
+                soil: '#78350f',
+                soilSoft: '#f5e7da',
+                sky: '#e0f2fe',
+                card: '#f9fafb',
+              },
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              heading: ['Pacifico', 'cursive'],
+            },
+            boxShadow: {
+              soft: '0 18px 45px rgba(15, 23, 42, 0.16)',
+            },
+          },
+        },
+      }
+    </script>
+  </head>
+  <body class="bg-gradient-to-br from-emerald-50 via-amber-50 to-emerald-100 min-h-screen antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
