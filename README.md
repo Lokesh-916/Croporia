@@ -37,11 +37,12 @@ A structured, RAG-ready knowledge base (`Farming_Data_RAG.md`) covering vegetabl
 
 ```
 Croporia/
-├── backend/             # Node.js/Express – MongoDB Models, Auth, Community, Fields
-├── src/                 # React frontend – Community, Crops, Field Wizard
+├── src/                 # Main React 19 frontend (wiki, fields, practices, community)
 ├── public/              # Static assets
-├── data/                # Crop database (crops.json)
-├── scripts/             # e.g. clean_farming_data.py → Farming_Data_RAG.md
+├── backend/             # Node.js/Express – MongoDB Models, Auth, Community, Fields
+├── python-backend/      # FastAPI RAG + plant health service
+├── smart-learning/      # (Optional) Standalone learning UI (not required in main app)
+├── talk-to-experts/     # (Optional) Standalone experts UI (design reference)
 ├── Farming_Data_RAG.md  # Curated knowledge base for RAG
 ├── .env                 # MONGODB_URI, JWT_SECRET, OPENAI_API_KEY, etc.
 └── README.md
@@ -51,12 +52,12 @@ Croporia/
 
 ## Getting Started
 
-### 1. Backend (MERN Stack)
+### 1. Node Backend (auth, fields, community)
 
 ```bash
 cd backend
 npm install
-npm start # or npm run dev
+npm run dev   # or: npm start
 ```
 
 Set in `.env` (backend folder):
@@ -75,6 +76,16 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173).
 
+### 3. Python RAG + Plant Health Backend
+
+```bash
+cd python-backend
+python -m venv venv
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+pip install -r requirements.txt
+uvicorn python_backend.main:app --reload --port 8001
+```
+
 ---
 
 ## API Overview
@@ -84,7 +95,7 @@ Open [http://localhost:5173](http://localhost:5173).
 | `/api/auth`     | POST   | Signup & Login |
 | `/api/fields`   | GET/POST| My Farm Field Management |
 | `/api/community`| GET/POST| Community Posts & Likes |
-| `/plant-health` | POST   | Upload image; (Python-FastAPI) |
+| `/plant-health` | POST   | Upload image; (Python FastAPI in `python-backend`) |
 
 ---
 

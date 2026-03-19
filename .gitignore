@@ -48,8 +48,8 @@ ENV/
 *.egg-info/
 *.egg
 
-# Backend / RAG
-backend/vectorstore/
+# Python RAG backend
+python-backend/vectorstore/
 
 # Misc
 .DS_Store
