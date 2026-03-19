@@ -27,7 +27,7 @@ A structured, RAG-ready knowledge base (`Farming_Data_RAG.md`) covering vegetabl
 | Layer        | Stack |
 |-------------|--------|
 | **Frontend** | React 19, Vite, Tailwind CSS, Inter & Pacifico fonts |
-| **Backend**  | FastAPI, Python 3.x |
+| **Backend**  | Node.js / Express (MERN), MongoDB |
 | **RAG**      | LangChain, OpenAI embeddings & chat, FAISS |
 | **Plant ID** | Plant.id API v2 (health assessment) |
 
@@ -37,59 +37,43 @@ A structured, RAG-ready knowledge base (`Farming_Data_RAG.md`) covering vegetabl
 
 ```
 Croporia/
-├── talk-to-experts/     # React frontend – Talk to Experts UI
-├── backend/             # FastAPI – RAG, plant health, ingest
+├── backend/             # Node.js/Express – MongoDB Models, Auth, Community, Fields
+├── src/                 # React frontend – Community, Crops, Field Wizard
+├── public/              # Static assets
+├── data/                # Crop database (crops.json)
 ├── scripts/             # e.g. clean_farming_data.py → Farming_Data_RAG.md
 ├── Farming_Data_RAG.md  # Curated knowledge base for RAG
-├── .env                 # OPENAI_API_KEY, PLANT_ID_API_KEY (optional)
+├── .env                 # MONGODB_URI, JWT_SECRET, OPENAI_API_KEY, etc.
 └── README.md
 ```
 
 ---
 
-## Quick Start
+## Getting Started
 
-### 1. Backend (RAG + Plant Health)
+### 1. Backend (MERN Stack)
 
 ```bash
 cd backend
-python -m venv .venv
-.venv\Scripts\activate   # Windows
-pip install -r requirements.txt
+npm install
+npm start # or npm run dev
 ```
 
-Set in `.env` (project root or `backend/`):
+Set in `.env` (backend folder):
 
-- `OPENAI_API_KEY` – required for RAG.
-- `PLANT_ID_API_KEY` – optional; required for `/plant-health`.
+- `MONGODB_URI` – required for database.
+- `JWT_SECRET` – required for authentication.
+- `OPENAI_API_KEY` – required for RAG features.
 
-```bash
-uvicorn backend.main:app --reload
-```
-
-- **Ingest** (after updating the knowledge base): `POST http://localhost:8000/ingest`
-- **Chat**: `POST http://localhost:8000/chat` with `{"question": "..."}`
-- **Plant health**: `POST http://localhost:8000/plant-health` with an image file.
-
-### 2. Frontend (Talk to Experts)
+### 2. Frontend (Vite)
 
 ```bash
-cd talk-to-experts
+# In the root folder
 npm install
 npm run dev
 ```
 
-Open the URL shown (e.g. `http://localhost:5173`).
-
-### 3. Regenerating the RAG Knowledge Base
-
-After editing `Farming_Data.md`:
-
-```bash
-python scripts/clean_farming_data.py
-```
-
-Then call `POST /ingest` to re-index.
+Open [http://localhost:5173](http://localhost:5173).
 
 ---
 
@@ -97,20 +81,10 @@ Then call `POST /ingest` to re-index.
 
 | Endpoint        | Method | Description |
 |----------------|--------|-------------|
-| `/health`     | GET    | Service and config check |
-| `/ingest`     | POST   | Rebuild FAISS index from `Farming_Data_RAG.md` |
-| `/chat`       | POST   | RAG Q&A; body: `{"question": "..."}` |
-| `/plant-health` | POST | Upload image; returns conditions + treatment suggestions |
-
----
-
-## Environment Variables
-
-| Variable | Purpose |
-|----------|---------|
-| `OPENAI_API_KEY` | RAG embeddings and chat |
-| `PLANT_ID_API_KEY` or `CROPORIA_PLANT_ID_API_KEY` | Plant health (pest/disease) |
-| `CROPORIA_FARMING_MARKDOWN_PATH` | Override path to knowledge base (default: `Farming_Data_RAG.md`) |
+| `/api/auth`     | POST   | Signup & Login |
+| `/api/fields`   | GET/POST| My Farm Field Management |
+| `/api/community`| GET/POST| Community Posts & Likes |
+| `/plant-health` | POST   | Upload image; (Python-FastAPI) |
 
 ---
 
