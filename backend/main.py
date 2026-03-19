@@ -4,9 +4,9 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from .config import settings
-from .plant_id import assess_health
-from .rag import rag_pipeline
+from backend.config import settings
+from backend.plant_id import assess_health
+from backend.rag import rag_pipeline
 
 
 class IngestResponse(BaseModel):
@@ -166,13 +166,13 @@ def plant_health_assessment(image: UploadFile = File(..., description="Plant or 
 
 
 if __name__ == "__main__":
-  # This block is only for direct `python main.py` runs.
+  # This block is only for local development convenience.
+  # Preferred: `uvicorn backend.main:app --reload`
   import uvicorn
 
   uvicorn.run(
-    "main:app",
+    "backend.main:app",
     host="0.0.0.0",
     port=8000,
     reload=True,
   )
-

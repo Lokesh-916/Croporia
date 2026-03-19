@@ -16,7 +16,7 @@ from typing import Any
 
 import httpx
 
-from .config import settings
+from backend.config import settings
 
 logger = logging.getLogger(__name__)
 
