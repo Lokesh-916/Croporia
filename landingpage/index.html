@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Croporia | The Future of Farming</title>
+  <meta name="description" content="Croporia — AI-powered farming intelligence for the modern grower.">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Progress bar -->
+<div id="progress"></div>
+
+<!-- Section nav dots -->
+<nav id="section-dots">
+  <div class="dot active" data-idx="0" title="Home"></div>
+  <div class="dot" data-idx="1" title="Command Center"></div>
+  <div class="dot" data-idx="2" title="Field Tools"></div>
+  <div class="dot" data-idx="3" title="Knowledge Hub"></div>
+  <div class="dot" data-idx="4" title="Community"></div>
+  <div class="dot" data-idx="5" title="About"></div>
+</nav>
+
+<!-- HEADER -->
+<header id="header">
+  <div class="logo">CROPORIA</div>
+  <nav style="position:static;display:flex;align-items:center;gap:2rem;">
+    <a href="#cluster-1">Features</a>
+    <a href="#cluster-4">Community</a>
+    <a href="#footer-strip">About</a>
+    <button class="login-btn">Login</button>
+  </nav>
+</header>
+
+<!-- HERO SECTION -->
+<section id="hero">
+  <div class="video-wrap">
+    <video autoplay muted loop playsinline>
+      <source src="bali_rice_farm.webm" type="video/webm">
+    </video>
+  </div>
+
+  <div class="hero-inner">
+    <p class="hero-eyebrow">AI-Powered Agriculture Platform</p>
+    <h1 class="hero-h1">The Future of Farming,<br><em>Rooted in Data.</em></h1>
+    <button class="hero-cta" onclick="scrollToSection(1)">
+      Enter Croporia
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Explore</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- SECTION 2 · CLUSTER 1 — COMMAND CENTER -->
+<section id="cluster-1" class="cluster">
+  <div class="cluster-inner">
+    <p class="cluster-label">Command Center</p>
+    <h2 class="cluster-title">Everything you need<br>in one place.</h2>
+    <p class="cluster-sub">Your personalised farming intelligence hub — from live crop prices to AI-curated insights.</p>
+
+    <div class="card-grid-4">
+      <div class="card">
+        <span class="card-icon">📡</span>
+        <div class="card-title">Curated Feed</div>
+        <div class="card-desc">Personalised news, alerts, and market prices — filtered for your crops and region.</div>
+        <span class="card-tag">Live Updates</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">📊</span>
+        <div class="card-title">User Dashboard</div>
+        <div class="card-desc">One glance to see your field health, upcoming tasks, weather, and crop stages.</div>
+        <span class="card-tag">Analytics</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">💬</span>
+        <div class="card-title">Farming Queries</div>
+        <div class="card-desc">Ask anything about soil, weather, pests, or yields. Get instant AI-powered answers.</div>
+        <span class="card-tag">AI Powered</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">🌱</span>
+        <div class="card-title">Find Best Crop</div>
+        <div class="card-desc">Enter your soil type, climate and season — discover the most profitable crop for you.</div>
+        <span class="card-tag">Smart Match</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3 · CLUSTER 2 — FIELD TOOLS -->
+<section id="cluster-2" class="cluster">
+  <div class="cluster-inner">
+    <p class="cluster-label">Field Tools</p>
+    <h2 class="cluster-title">Precision tools for<br>the modern grower.</h2>
+    <p class="cluster-sub">Built for real decisions — simulate, track, and identify before it costs you.</p>
+
+    <div class="card-grid-tools">
+      <div class="card-tool">
+        <div class="card-tool-bg" style="background: linear-gradient(135deg, #1a4001 0%, #2d6b00 100%);"></div>
+        <div class="card-tool-overlay"></div>
+        <div class="card-tool-content">
+          <span class="card-tool-icon">🌾</span>
+          <div class="card-tool-title">Crop Simulator</div>
+          <div class="card-tool-desc">Model planting timelines, expected yields, and growth stages before you sow a single seed.</div>
+          <div class="card-tool-cta">
+            Try Simulator
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-tool">
+        <div class="card-tool-bg" style="background: linear-gradient(135deg, #0d2a00 0%, #1e5200 60%, #2a7000 100%);"></div>
+        <div class="card-tool-overlay" style="background: linear-gradient(to top, rgba(11,31,0,0.95) 0%, rgba(11,31,0,0.2) 100%);"></div>
+        <div class="card-tool-content">
+          <span class="card-tool-icon">💸</span>
+          <div class="card-tool-title">Expense Tracker</div>
+          <div class="card-tool-desc">Log seeds, fertiliser, labour, and irrigation costs. Understand your true cost per acre and maximise margins.</div>
+          <div class="card-tool-cta">
+            Track Costs
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-tool">
+        <div class="card-tool-bg" style="background: linear-gradient(135deg, #1c3800 0%, #355e00 100%);"></div>
+        <div class="card-tool-overlay"></div>
+        <div class="card-tool-content">
+          <span class="card-tool-icon">🔬</span>
+          <div class="card-tool-title">Pest Identifier</div>
+          <div class="card-tool-desc">Photograph a leaf or describe symptoms — our AI diagnoses the pest or disease and recommends treatment.</div>
+          <div class="card-tool-cta">
+            Identify Now
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4 · CLUSTER 3 — KNOWLEDGE HUB -->
+<section id="cluster-3" class="cluster">
+  <div class="cluster-inner">
+    <p class="cluster-label">Knowledge Hub</p>
+    <h2 class="cluster-title">Learn. Reference.<br>Grow smarter.</h2>
+    <p class="cluster-sub">A living library built for farmers — curated by agronomists and updated continuously.</p>
+
+    <div class="card-grid-3">
+      <div class="card">
+        <span class="card-icon">🎓</span>
+        <div class="card-title">Smart Learning Modules</div>
+        <div class="card-desc">Short video lessons and interactive guides covering soil health, irrigation, IPM, and crop management techniques.</div>
+        <span class="card-tag">50+ Modules</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">🌿</span>
+        <div class="card-title">Plants Encyclopedia</div>
+        <div class="card-desc">Detailed profiles for 500+ crops and plants — growth requirements, harvest windows, nutritional needs, and companion plants.</div>
+        <span class="card-tag">500+ Crops</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">📖</span>
+        <div class="card-title">Practices Wiki</div>
+        <div class="card-desc">Proven and emerging farming practices — from organic certification to precision micro-irrigation, explained in plain language.</div>
+        <span class="card-tag">Field Tested</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5 · CLUSTER 4 — COMMUNITY & ACCESS -->
+<section id="cluster-4" class="cluster">
+  <div class="cluster-inner">
+    <p class="cluster-label">Community</p>
+    <h2 class="cluster-title">Farming is better<br>together.</h2>
+    <p class="cluster-sub">Connect with agronomists, share field knowledge, and grow your network alongside your crops.</p>
+
+    <div class="community-grid">
+      <div class="card-hero-community">
+        <div>
+          <div class="community-big-icon">👥</div>
+          <div class="community-big-title">Join the Croporia Community</div>
+          <div class="community-big-desc">Thousands of farmers sharing real-time advice, crop updates, and local market knowledge. Your most useful farming tool might just be the farmer next door.</div>
+        </div>
+        <button class="join-btn">
+          Create Free Account
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2.5 7h9M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">👨🌾</span>
+        <div class="card-title">Talk to Experts</div>
+        <div class="card-desc">Book 1-on-1 sessions with certified agronomists, soil scientists, and crop specialists — available in regional languages.</div>
+        <span class="card-tag">Live Consultation</span>
+      </div>
+
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;">
+        <div>
+          <span class="card-icon">🤝</span>
+          <div class="card-title">Community Forum</div>
+          <div class="card-desc">Post questions, share discoveries, and learn from farmers across different climates and crop types.</div>
+        </div>
+        <span class="card-tag">12,000+ Members</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<section id="footer-strip">
+  <div class="footer-content">
+    <div class="footer-logo">CROPORIA</div>
+    <h2 class="footer-tagline">Where data meets<br><em>the soil.</em></h2>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+      <a href="#">Blog</a>
+      <a href="#">Careers</a>
+    </div>
+    <p class="footer-copy">© 2026 Croporia Technologies · Built for the modern farmer</p>
+  </div>
+</section>
+
+<script>
+  /* Section references */
+  const sections = document.querySelectorAll('section');
+  const dots = document.querySelectorAll('.dot');
+  const header = document.getElementById('header');
+  const progress = document.getElementById('progress');
+
+  function scrollToSection(idx) {
+    sections[idx].scrollIntoView({ behavior: 'smooth' });
+  }
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      scrollToSection(parseInt(dot.dataset.idx));
+    });
+  });
+
+  /* Intersection Observer — active dot + header */
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = Array.from(sections).indexOf(entry.target);
+        dots.forEach(d => d.classList.remove('active'));
+        if (dots[idx]) dots[idx].classList.add('active');
+
+        // Transparent header on hero, solid on others
+        if (idx === 0) {
+          header.classList.remove('scrolled');
+        } else {
+          header.classList.add('scrolled');
+        }
+
+        // Progress bar
+        progress.style.width = ((idx + 1) / sections.length * 100) + '%';
+      }
+    });
+  }, { threshold: 0.5 });
+
+  sections.forEach(s => sectionObserver.observe(s));
+
+  /* Card reveal animations */
+  const cardObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Stagger all animatable children
+        const animatables = entry.target.querySelectorAll('.card, .card-tool, .card-hero-community');
+        animatables.forEach((el, i) => {
+          setTimeout(() => {
+            el.classList.add('visible');
+          }, i * 100);
+        });
+        cardObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.cluster').forEach(c => cardObserver.observe(c));
+
+  /* Keyboard navigation */
+  let currentSectionIndex = 0;
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      currentSectionIndex = Math.min(currentSectionIndex + 1, sections.length - 1);
+      scrollToSection(currentSectionIndex);
+    }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      currentSectionIndex = Math.max(currentSectionIndex - 1, 0);
+      scrollToSection(currentSectionIndex);
+    }
+  });
+
+  // Track current section via scroll
+  const trackObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        currentSectionIndex = Array.from(sections).indexOf(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  sections.forEach(s => trackObserver.observe(s));
+</script>
+</body>
+</html>
