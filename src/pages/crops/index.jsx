@@ -34,6 +34,19 @@ const CROP_IMAGES = {
   'garlic':'https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=400&q=80',
   'mint':'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=400&q=80',
   'aloe-vera':'https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?w=400&q=80',
+  'lemon':'https://images.unsplash.com/photo-1582087677879-6a0d8f6e3e5e?w=400&q=80',
+  'sapota':'https://images.unsplash.com/photo-1536511132770-e5058c7e8c46?w=400&q=80',
+  'soybean':'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=400&q=80',
+  'red-gram':'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=400&q=80',
+  'blackgram':'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=400&q=80',
+  'coriander':'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=400&q=80',
+  'fenugreek':'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400&q=80',
+  'curry-leaf':'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=400&q=80',
+  'lemongrass':'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=400&q=80',
+  'ashwagandha':'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400&q=80',
+  'tulsi':'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=400&q=80',
+  'bitter-gourd':'https://images.unsplash.com/photo-1628773822503-930a7eaecf80?w=400&q=80',
+  'bottle-gourd':'https://images.unsplash.com/photo-1628773822503-930a7eaecf80?w=400&q=80',
 }
 
 export default function CropWiki() {

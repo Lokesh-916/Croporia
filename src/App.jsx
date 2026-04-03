@@ -10,8 +10,11 @@ import PracticesIndex from './pages/practices/index'
 import PracticeDetail from './pages/practices/[slug]'
 import FieldsIndex from './pages/fields/index'
 import FieldNew from './pages/fields/new'
+import FieldDetail from './pages/fields/[id]'
+import FieldEdit from './pages/fields/edit'
 import CommunityIndex from './pages/community/index'
 import Experts from './pages/experts'
+import ExpertDashboard from './pages/expert-dashboard'
 import Assistant from './pages/assistant'
 import PestHealth from './pages/pest-health'
 import Market from './pages/market'
@@ -35,6 +38,7 @@ function App() {
           <Route path="/predictor" element={<Predictor />} />
           <Route path="/learn" element={<Learn />} />
           <Route path="/experts" element={<Experts />} />
+          <Route path="/expert-dashboard" element={<ProtectedRoute><ExpertDashboard /></ProtectedRoute>} />
           <Route path="/assistant" element={<Assistant />} />
           <Route path="/pest-health" element={<PestHealth />} />
           <Route path="/market" element={<Market />} />
@@ -43,6 +47,8 @@ function App() {
           <Route path="/community" element={<ProtectedRoute><CommunityIndex /></ProtectedRoute>} />
           <Route path="/fields" element={<ProtectedRoute><FieldsIndex /></ProtectedRoute>} />
           <Route path="/fields/new" element={<ProtectedRoute><FieldNew /></ProtectedRoute>} />
+          <Route path="/fields/:id" element={<ProtectedRoute><FieldDetail /></ProtectedRoute>} />
+          <Route path="/fields/:id/edit" element={<ProtectedRoute><FieldEdit /></ProtectedRoute>} />
         </Routes>
         <FloatingChatbot />
       </div>
