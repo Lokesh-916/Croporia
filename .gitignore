@@ -50,3 +50,14 @@ python-backend/vectorstore/faiss_index/index.pkl
 .eslintcache
 *.bak
 *.tmp
+
+# ── Old prototype folders (removed from tracking) ─────────
+Dash_Tracker/
+crop_selling_app/
+crop-monetizer-prototype/
+smart-learning/
+talk-to-experts/
+crop-predictor.html
+script.js
+styles.css
+README.old.md
