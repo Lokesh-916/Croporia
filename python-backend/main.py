@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+import numpy as np
+import pandas as pd
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from python_backend.config import settings
-from python_backend.plant_id import assess_health
-from python_backend.rag import rag_pipeline
+from config import settings
+from plant_id import assess_health
+from rag import rag_pipeline
 
 
 class IngestResponse(BaseModel):
@@ -167,9 +169,6 @@ def plant_health_assessment(image: UploadFile = File(..., description="Plant or 
 
 
 # ── Crop Monetizer ────────────────────────────────────────────────────────────
-
-import numpy as np
-import pandas as pd
 
 CROP_PRICES_KG = {
   "tomato": 35.0, "brinjal": 30.0, "okra": 40.0, "chilli": 60.0, "onion": 30.0,
