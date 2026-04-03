@@ -333,6 +333,106 @@ function DiaryPage({ store }) {
   )
 }
 
+// ── Expenses Page ─────────────────────────────────────────────────────────────
+function ExpensesPage({ store }) {
+  const { expenses, fields } = store
+  const [modal, setModal] = useState(false)
+  const total = sum(expenses.data, e => e.amount)
+  const byCat = expenses.data.reduce((a, e) => { a[e.cat] = (a[e.cat] || 0) + Number(e.amount); return a }, {})
+  const cats = Object.keys(byCat)
+  const catChart = { type: 'doughnut', data: { labels: cats, datasets: [{ data: cats.map(c => byCat[c]), backgroundColor: ['#538d22','#a98467','#c0392b','#718355','#97a97c','#245501','#73a942','#6c584c'], borderWidth: 2, borderColor: '#fff' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 10, padding: 10 } } } } }
+  return (
+    <div className="space-y-5">
+      <SectionHeader title="Expenses" sub="Track all farm expenditures by category, crop, and field" action={<button onClick={() => setModal(true)} className="flex items-center gap-1.5 px-4 py-2 bg-black-forest hover:bg-forest text-white text-sm font-semibold rounded-xl transition-colors"><Plus className="w-4 h-4" />Add Expense</button>} />
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <MetricCard label="Total Spent" value={fmtK(total)} color="bg-vanilla" textColor="text-copper" />
+        <MetricCard label="Transactions" value={expenses.data.length} />
+        <MetricCard label="Top Category" value={cats.sort((a, b) => byCat[b] - byCat[a])[0] || '—'} />
+        <MetricCard label="This Month" value={fmtK(sum(expenses.data.filter(e => new Date(e.date) >= new Date(new Date().setDate(1))), e => e.amount))} />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-5">
+        <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
+          {expenses.data.length === 0 && <div className="bg-white rounded-2xl border border-dashed border-olive/40 p-10 text-center text-ash">No expenses yet.</div>}
+          {expenses.data.map(e => (
+            <div key={e.id} className="flex items-center gap-3 bg-white rounded-xl border border-olive/20 px-4 py-3">
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold shrink-0" style={{ background: (CROP_COLORS[e.crop] || '#888') + '20', color: CROP_COLORS[e.crop] || '#888' }}>{e.cat[0]}</div>
+              <div className="flex-1 min-w-0"><p className="text-sm font-medium text-black-forest truncate">{e.desc || e.cat}</p><p className="text-[11px] text-ash">{e.cat} · {e.crop} · {fmtD(e.date)} · {e.pay}</p></div>
+              <span className="text-sm font-semibold text-copper shrink-0">-{fmt(e.amount)}</span>
+              <button onClick={() => expenses.remove(e.id)} className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-50 text-ash hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
+            </div>
+          ))}
+        </div>
+        <div className="bg-white rounded-2xl border border-olive/20 p-5">
+          <p className="text-sm font-semibold text-black-forest mb-3">Spending by Category</p>
+          {cats.length > 0 ? <ChartBox config={catChart} height="280px" /> : <div className="flex items-center justify-center h-[280px] text-ash text-sm">No data yet</div>}
+        </div>
+      </div>
+      <Modal open={modal} onClose={() => setModal(false)} title="Add Expense" footer={<><button onClick={() => setModal(false)} className="px-4 py-2 rounded-xl border border-olive/40 text-ash text-sm font-semibold hover:bg-frosted">Cancel</button><button onClick={() => { const amt = Number(document.getElementById('ea').value); if (!amt) { alert('Enter amount'); return } expenses.add({ id: uid(), date: document.getElementById('ed').value || today(), amount: amt, cat: document.getElementById('ec').value, crop: document.getElementById('ecrop').value, field: document.getElementById('ef').value, pay: document.getElementById('ep').value, desc: document.getElementById('edesc').value }); setModal(false) }} className="px-4 py-2 rounded-xl bg-black-forest hover:bg-forest text-white text-sm font-semibold">Save</button></>}>
+        <div className="grid grid-cols-2 gap-3"><div><label className={lbl}>Date</label><input id="ed" type="date" className={inp} defaultValue={today()} /></div><div><label className={lbl}>Amount (Rs)</label><input id="ea" type="number" className={inp} placeholder="0" /></div></div>
+        <div className="grid grid-cols-2 gap-3"><div><label className={lbl}>Category</label><select id="ec" className={sel}>{EXPENSE_CATEGORIES.map(c => <option key={c}>{c}</option>)}</select></div><div><label className={lbl}>Crop</label><select id="ecrop" className={sel}>{CROPS.map(c => <option key={c}>{c}</option>)}</select></div></div>
+        <div className="grid grid-cols-2 gap-3"><div><label className={lbl}>Field</label><select id="ef" className={sel}>{fields.data.map(f => <option key={f.id}>{f.name}</option>)}</select></div><div><label className={lbl}>Payment</label><select id="ep" className={sel}>{PAYMENT_METHODS.map(p => <option key={p}>{p}</option>)}</select></div></div>
+        <div><label className={lbl}>Description</label><input id="edesc" className={inp} placeholder="e.g. DAP fertilizer 50kg" /></div>
+      </Modal>
+    </div>
+  )
+}
+
+// ── Tasks Page ────────────────────────────────────────────────────────────────
+function TasksPage({ store }) {
+  const { tasks } = store
+  const [modal, setModal] = useState(false)
+  const [form, setForm] = useState({ title: '', date: today(), pri: 'Medium', cat: 'Fertilizer' })
+  const pending = tasks.data.filter(t => !t.done)
+  const done = tasks.data.filter(t => t.done)
+  const overdue = pending.filter(t => isOverdue(t.date))
+  const upcoming = pending.filter(t => !isOverdue(t.date)).sort((a, b) => ({ High: 0, Medium: 1, Low: 2 }[a.pri] - { High: 0, Medium: 1, Low: 2 }[b.pri]))
+  return (
+    <div className="space-y-5">
+      <SectionHeader title="Tasks & Reminders" sub="Stay on top of farm activities, deadlines and scheduled tasks" action={<button onClick={() => setModal(true)} className="flex items-center gap-1.5 px-4 py-2 bg-black-forest hover:bg-forest text-white text-sm font-semibold rounded-xl transition-colors"><Plus className="w-4 h-4" />Add Task</button>} />
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <MetricCard label="Overdue" value={overdue.length} color={overdue.length > 0 ? 'bg-red-50' : 'bg-frosted'} textColor={overdue.length > 0 ? 'text-red-600' : 'text-black-forest'} />
+        <MetricCard label="Pending" value={pending.length} color="bg-vanilla" />
+        <MetricCard label="High Priority" value={pending.filter(t => t.pri === 'High').length} color="bg-cream" />
+        <MetricCard label="Completed" value={done.length} color="bg-frosted" textColor="text-forest" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="space-y-2">
+          {overdue.length > 0 && <div className="flex items-center gap-2 bg-red-50 border border-red-100 rounded-xl px-4 py-2.5 text-sm text-red-700 font-semibold"><AlertTriangle className="w-4 h-4" />{overdue.length} overdue task{overdue.length > 1 ? 's' : ''}</div>}
+          {[...overdue, ...upcoming].map(t => (
+            <div key={t.id} className={`flex items-center gap-3 bg-white rounded-xl border px-4 py-3 ${isOverdue(t.date) ? 'border-red-200' : 'border-olive/20'}`}>
+              <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PRIORITY_COLORS[t.pri] }} />
+              <div className="flex-1 min-w-0"><p className="text-sm font-medium text-black-forest truncate">{t.title}</p><p className="text-[11px] text-ash">{t.cat} · Due {fmtD(t.date)} · <span style={{ color: PRIORITY_COLORS[t.pri] }}>{t.pri}</span></p></div>
+              <button onClick={() => tasks.update(t.id, { done: true })} className="flex items-center gap-1 text-[11px] font-semibold text-forest border border-olive/30 px-2.5 py-1 rounded-full hover:bg-frosted transition-colors"><Check className="w-3 h-3" />Done</button>
+              <button onClick={() => tasks.remove(t.id)} className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-50 text-ash hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
+            </div>
+          ))}
+          {pending.length === 0 && <div className="bg-frosted rounded-xl border border-olive/20 p-6 text-center text-ash text-sm">All tasks completed!</div>}
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-black-forest mb-3">Completed ({done.length})</p>
+          <div className="space-y-2 opacity-60">
+            {done.map(t => (
+              <div key={t.id} className="flex items-center gap-3 bg-white rounded-xl border border-olive/20 px-4 py-3">
+                <div className="w-2.5 h-2.5 rounded-full bg-ash/40 shrink-0" />
+                <p className="text-sm text-ash line-through flex-1 truncate">{t.title}</p>
+                <button onClick={() => tasks.remove(t.id)} className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-50 text-ash hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <Modal open={modal} onClose={() => setModal(false)} title="Add Task / Reminder" footer={<><button onClick={() => setModal(false)} className="px-4 py-2 rounded-xl border border-olive/40 text-ash text-sm font-semibold hover:bg-frosted">Cancel</button><button onClick={() => { if (!form.title.trim()) { alert('Enter task name'); return } tasks.add({ id: uid(), ...form, done: false }); setForm({ title: '', date: today(), pri: 'Medium', cat: 'Fertilizer' }); setModal(false) }} className="px-4 py-2 rounded-xl bg-black-forest hover:bg-forest text-white text-sm font-semibold">Save Task</button></>}>
+        <div><label className={lbl}>Task Description</label><input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} className={inp} placeholder="e.g. Apply fertilizer — Rice field" /></div>
+        <div className="grid grid-cols-3 gap-3">
+          <div><label className={lbl}>Due Date</label><input type="date" value={form.date} onChange={e => setForm(p => ({ ...p, date: e.target.value }))} className={inp} /></div>
+          <div><label className={lbl}>Priority</label><select value={form.pri} onChange={e => setForm(p => ({ ...p, pri: e.target.value }))} className={sel}>{['High', 'Medium', 'Low'].map(p => <option key={p}>{p}</option>)}</select></div>
+          <div><label className={lbl}>Category</label><select value={form.cat} onChange={e => setForm(p => ({ ...p, cat: e.target.value }))} className={sel}>{TASK_CATEGORIES.map(c => <option key={c}>{c}</option>)}</select></div>
+        </div>
+      </Modal>
+    </div>
+  )
+}
+
 // ── Main UserDashboard wrapper ────────────────────────────────────────────────
 const PAGES = { dashboard: DashboardPage, fields: FieldsPage, yields: YieldsPage, diary: DiaryPage, expenses: ExpensesPage, loans: LoansPage, tasks: TasksPage }
 
