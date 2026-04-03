@@ -15,6 +15,7 @@ import FieldEdit from './pages/fields/edit'
 import CommunityIndex from './pages/community/index'
 import Experts from './pages/experts'
 import ExpertDashboard from './pages/expert-dashboard'
+import UserDashboard from './pages/user-dashboard'
 import Assistant from './pages/assistant'
 import PestHealth from './pages/pest-health'
 import Market from './pages/market'
@@ -39,6 +40,7 @@ function App() {
           <Route path="/learn" element={<Learn />} />
           <Route path="/experts" element={<Experts />} />
           <Route path="/expert-dashboard" element={<ProtectedRoute><ExpertDashboard /></ProtectedRoute>} />
+          <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
           <Route path="/assistant" element={<Assistant />} />
           <Route path="/pest-health" element={<PestHealth />} />
           <Route path="/market" element={<Market />} />

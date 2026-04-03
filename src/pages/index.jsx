@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+﻿import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const STYLE = `
@@ -40,21 +40,14 @@ const STYLE = `
   .lp-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
   #s1{background:#143601}
   #s1::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 15% 50%,rgba(36,85,1,.5) 0%,transparent 65%);pointer-events:none}
-  #s2{background:#1a4301}
+  #s2{background:#1c3800}
   #s2::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 65% at 85% 50%,rgba(83,141,34,.18) 0%,transparent 65%);pointer-events:none}
   #s3{background:#f0ead2;color:#143601}
   #s3 .lp-label{color:#538d22}
   #s3 .lp-title{color:#143601}
   #s3 .lp-sub{color:rgba(20,54,1,.55)}
-  #s4{background:#245501}
+  #s4{background:#2d4a1e}
   #s4::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 60%,rgba(170,213,118,.14) 0%,transparent 65%);pointer-events:none}
-  .lp-card{border-radius:12px;padding:1.6rem 1.4rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);cursor:pointer;transition:transform .35s cubic-bezier(.34,1.56,.64,1),background .3s,border-color .3s,box-shadow .3s;opacity:0;transform:translateY(28px)}
-  .lp-card.visible{animation:lpCardReveal .6s cubic-bezier(.16,1,.3,1) forwards}
-  .lp-card:hover{transform:translateY(-5px) scale(1.01);background:rgba(255,255,255,.1);border-color:rgba(170,213,118,.4);box-shadow:0 12px 40px rgba(0,0,0,.3),0 0 20px rgba(170,213,118,.08)}
-  .lp-card:nth-child(1){border-top:2px solid #538d22}
-  .lp-card:nth-child(2){border-top:2px solid #73a942}
-  .lp-card:nth-child(3){border-top:2px solid #97a97c}
-  .lp-card:nth-child(4){border-top:2px solid #aad576}
   .lp-card-light{background:#fff;border:1px solid rgba(20,54,1,.08);backdrop-filter:none;box-shadow:0 2px 16px rgba(0,0,0,.06)}
   .lp-card-light:hover{background:#fff;border-color:#538d22;box-shadow:0 12px 40px rgba(0,0,0,.1),0 0 0 3px rgba(83,141,34,.08)}
   .lp-card-light .lp-card-title{color:#143601}
@@ -85,7 +78,7 @@ const STYLE = `
   .lp-comm-desc{font-size:.85rem;color:rgba(255,255,255,.5);line-height:1.6;font-weight:300;margin-bottom:1.4rem}
   .lp-join-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.8rem;background:#aad576;color:#143601;border-radius:100px;font-size:.85rem;font-weight:600;border:none;cursor:pointer;transition:all .3s ease;font-family:'Inter',sans-serif;letter-spacing:.02em;align-self:flex-start}
   .lp-join-btn:hover{background:#dde5b6;transform:scale(1.03)}
-  #lp-footer{height:100vh;background:#0d2200;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;overflow:hidden}
+  #lp-footer{height:100vh;background:#0a1a00;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;overflow:hidden}
   #lp-footer::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(83,141,34,.18) 0%,transparent 70%)}
   .lp-footer-inner{position:relative;z-index:10}
   .lp-footer-logo{font-family:'Cinzel',serif;font-weight:400;font-size:1rem;letter-spacing:.25em;color:#aad576;margin-bottom:2rem;display:flex;align-items:center;justify-content:center;gap:.6rem}
