@@ -1,16 +1,15 @@
-﻿import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-// Croporia brand palette mapped to the landing page structure
 const STYLE = `
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
   html{scroll-snap-type:y mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;overflow-y:scroll}
   html::-webkit-scrollbar{display:none}
   body{font-family:'Inter',system-ui,sans-serif;background:#143601;color:#fff;overflow-x:hidden}
-  #lp-progress{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,#538d22,#aad576);z-index:999;transition:width .15s ease}
+  #lp-progress{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,#245501,#538d22,#aad576,#cfe1b9);z-index:999;transition:width .15s ease}
   #lp-header{position:fixed;top:0;left:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:1.4rem 4rem;z-index:200;transition:background .4s ease}
-  #lp-header.scrolled{background:rgba(20,54,1,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-  .lp-logo{font-family:'Cinzel',serif;font-weight:700;font-size:1.1rem;letter-spacing:.22em;color:#fff;display:flex;align-items:center;gap:.6rem}
+  #lp-header.scrolled{background:rgba(20,54,1,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  .lp-logo{font-family:'Cinzel',serif;font-weight:400;font-size:1.1rem;letter-spacing:.22em;color:#fff;display:flex;align-items:center;gap:.6rem}
   .lp-logo img{width:28px;height:28px;object-fit:contain}
   .lp-nav{display:flex;align-items:center;gap:2rem}
   .lp-nav a{color:rgba(255,255,255,.7);text-decoration:none;font-size:.85rem;font-weight:400;letter-spacing:.04em;transition:color .2s;cursor:pointer}
@@ -23,10 +22,10 @@ const STYLE = `
   .lp-section{height:100vh;width:100%;scroll-snap-align:start;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
   .lp-video-wrap{position:absolute;inset:0;z-index:0}
   .lp-video-wrap video{width:100%;height:100%;object-fit:cover}
-  .lp-video-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(20,54,1,.35) 0%,rgba(20,54,1,.15) 40%,rgba(20,54,1,.65) 100%)}
+  .lp-video-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(20,54,1,.3) 0%,rgba(20,54,1,.1) 40%,rgba(20,54,1,.72) 100%)}
   .lp-hero-inner{position:relative;z-index:10;text-align:center;opacity:0;transform:translateY(24px);animation:lpHeroFade 1.2s .3s cubic-bezier(.16,1,.3,1) forwards}
   .lp-eyebrow{font-size:.75rem;letter-spacing:.25em;text-transform:uppercase;color:#aad576;margin-bottom:1.2rem;font-weight:500}
-  .lp-h1{font-family:'Cinzel',serif;font-size:clamp(2.8rem,6vw,5.2rem);line-height:1.1;color:#fff;text-shadow:0 2px 40px rgba(0,0,0,.4);max-width:820px;margin:0 auto 2.5rem}
+  .lp-h1{font-family:'Cinzel',serif;font-weight:400;font-size:clamp(2.8rem,6vw,5.2rem);line-height:1.1;color:#fff;text-shadow:0 2px 40px rgba(0,0,0,.4);max-width:820px;margin:0 auto 2.5rem}
   .lp-h1 em{font-style:italic;color:#aad576}
   .lp-cta{display:inline-flex;align-items:center;gap:.6rem;padding:.9rem 2.4rem;background:rgba(255,255,255,.08);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(170,213,118,.5);color:#fff;font-family:'Inter',sans-serif;font-size:.95rem;font-weight:500;border-radius:100px;cursor:pointer;transition:all .4s cubic-bezier(.34,1.56,.64,1);letter-spacing:.02em}
   .lp-cta:hover{background:rgba(170,213,118,.15);border-color:#aad576;transform:scale(1.04);box-shadow:0 0 40px rgba(170,213,118,.2)}
@@ -35,19 +34,35 @@ const STYLE = `
   .lp-cluster{padding:0 4rem;justify-content:center}
   .lp-cluster-inner{position:relative;z-index:10;max-width:1200px;margin:0 auto;width:100%}
   .lp-label{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:#aad576;margin-bottom:.5rem;font-weight:500}
-  .lp-title{font-family:'Cinzel',serif;font-size:clamp(1.8rem,3.5vw,3rem);line-height:1.15;margin-bottom:.6rem}
+  .lp-title{font-family:'Cinzel',serif;font-weight:400;font-size:clamp(1.8rem,3.5vw,3rem);line-height:1.15;margin-bottom:.6rem}
   .lp-sub{font-size:.9rem;color:rgba(255,255,255,.5);margin-bottom:2.4rem;font-weight:300;max-width:520px}
   .lp-grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
   .lp-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
-  .lp-card{border-radius:12px;padding:1.6rem 1.4rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);cursor:pointer;transition:transform .35s cubic-bezier(.34,1.56,.64,1),background .3s,border-color .3s,box-shadow .3s;opacity:0;transform:translateY(28px)}
+  #s1{background:#143601}
+  #s1::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 15% 50%,rgba(36,85,1,.5) 0%,transparent 65%);pointer-events:none}
+  #s2{background:#1a4301}
+  #s2::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 65% at 85% 50%,rgba(83,141,34,.18) 0%,transparent 65%);pointer-events:none}
+  #s3{background:#f0ead2;color:#143601}
+  #s3 .lp-label{color:#538d22}
+  #s3 .lp-title{color:#143601}
+  #s3 .lp-sub{color:rgba(20,54,1,.55)}
+  #s4{background:#245501}
+  #s4::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 60%,rgba(170,213,118,.14) 0%,transparent 65%);pointer-events:none}
+  .lp-card{border-radius:12px;padding:1.6rem 1.4rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);cursor:pointer;transition:transform .35s cubic-bezier(.34,1.56,.64,1),background .3s,border-color .3s,box-shadow .3s;opacity:0;transform:translateY(28px)}
   .lp-card.visible{animation:lpCardReveal .6s cubic-bezier(.16,1,.3,1) forwards}
-  .lp-card:hover{transform:translateY(-5px) scale(1.01);background:rgba(255,255,255,.1);border-color:rgba(170,213,118,.35);box-shadow:0 12px 40px rgba(0,0,0,.3),0 0 20px rgba(170,213,118,.08)}
+  .lp-card:hover{transform:translateY(-5px) scale(1.01);background:rgba(255,255,255,.1);border-color:rgba(170,213,118,.4);box-shadow:0 12px 40px rgba(0,0,0,.3),0 0 20px rgba(170,213,118,.08)}
+  .lp-card:nth-child(1){border-top:2px solid #538d22}
+  .lp-card:nth-child(2){border-top:2px solid #73a942}
+  .lp-card:nth-child(3){border-top:2px solid #97a97c}
+  .lp-card:nth-child(4){border-top:2px solid #aad576}
   .lp-card-light{background:#fff;border:1px solid rgba(20,54,1,.08);backdrop-filter:none;box-shadow:0 2px 16px rgba(0,0,0,.06)}
   .lp-card-light:hover{background:#fff;border-color:#538d22;box-shadow:0 12px 40px rgba(0,0,0,.1),0 0 0 3px rgba(83,141,34,.08)}
   .lp-card-light .lp-card-title{color:#143601}
   .lp-card-light .lp-card-desc{color:rgba(20,54,1,.6)}
   .lp-card-light .lp-card-tag{color:#538d22;background:rgba(83,141,34,.08)}
-  .lp-card-icon{font-size:1.8rem;margin-bottom:1rem;display:block;line-height:1}
+  .lp-card-light:nth-child(1){border-top:2px solid #538d22}
+  .lp-card-light:nth-child(2){border-top:2px solid #73a942}
+  .lp-card-light:nth-child(3){border-top:2px solid #97a97c}
   .lp-card-title{font-family:'Inter',sans-serif;font-weight:600;font-size:.95rem;color:#fff;margin-bottom:.4rem;letter-spacing:.01em}
   .lp-card-desc{font-size:.8rem;color:rgba(255,255,255,.45);line-height:1.55;font-weight:300}
   .lp-card-tag{display:inline-block;margin-top:1rem;font-size:.67rem;letter-spacing:.12em;text-transform:uppercase;color:#aad576;background:rgba(170,213,118,.1);padding:.25rem .6rem;border-radius:100px;font-weight:500}
@@ -59,25 +74,23 @@ const STYLE = `
   .lp-tool:hover .lp-tool-bg{transform:scale(1.06)}
   .lp-tool-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(20,54,1,.92) 0%,rgba(20,54,1,.3) 100%)}
   .lp-tool-content{position:absolute;bottom:0;left:0;right:0;padding:1.6rem}
-  .lp-tool-icon{font-size:1.6rem;display:block;margin-bottom:.6rem}
   .lp-tool-title{font-family:'Inter',sans-serif;font-size:1.05rem;font-weight:600;color:#fff;margin-bottom:.3rem}
   .lp-tool-desc{font-size:.78rem;color:rgba(255,255,255,.5);line-height:1.5;font-weight:300}
   .lp-tool-cta{margin-top:.9rem;display:inline-flex;align-items:center;gap:.35rem;font-size:.75rem;font-weight:500;color:#aad576;letter-spacing:.06em;text-transform:uppercase}
   .lp-comm-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:1.2rem;align-items:stretch}
-  .lp-comm-hero{background:linear-gradient(135deg,rgba(83,141,34,.2) 0%,rgba(170,213,118,.08) 100%);border:1px solid rgba(170,213,118,.2);border-radius:16px;padding:2.4rem 2rem;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;opacity:0;transform:translateY(28px);transition:all .35s ease}
+  .lp-comm-hero{background:linear-gradient(135deg,rgba(113,131,85,.28) 0%,rgba(170,213,118,.08) 100%);border:1px solid rgba(170,213,118,.22);border-radius:16px;padding:2.4rem 2rem;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;opacity:0;transform:translateY(28px);transition:all .35s ease}
   .lp-comm-hero.visible{animation:lpCardReveal .6s cubic-bezier(.16,1,.3,1) forwards}
-  .lp-comm-hero:hover{transform:translateY(-5px);border-color:rgba(170,213,118,.45);box-shadow:0 16px 50px rgba(0,0,0,.3)}
-  .lp-comm-icon{font-size:3rem;margin-bottom:1.2rem}
-  .lp-comm-title{font-family:'Cinzel',serif;font-size:1.8rem;line-height:1.2;margin-bottom:.6rem}
+  .lp-comm-hero:hover{transform:translateY(-5px);border-color:rgba(170,213,118,.5);box-shadow:0 16px 50px rgba(0,0,0,.3)}
+  .lp-comm-title{font-family:'Cinzel',serif;font-weight:400;font-size:1.8rem;line-height:1.2;margin-bottom:.6rem}
   .lp-comm-desc{font-size:.85rem;color:rgba(255,255,255,.5);line-height:1.6;font-weight:300;margin-bottom:1.4rem}
   .lp-join-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.8rem;background:#aad576;color:#143601;border-radius:100px;font-size:.85rem;font-weight:600;border:none;cursor:pointer;transition:all .3s ease;font-family:'Inter',sans-serif;letter-spacing:.02em;align-self:flex-start}
-  .lp-join-btn:hover{background:#fff;transform:scale(1.03)}
-  #lp-footer{height:100vh;background:#143601;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;overflow:hidden}
-  #lp-footer::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(83,141,34,.15) 0%,transparent 70%)}
+  .lp-join-btn:hover{background:#dde5b6;transform:scale(1.03)}
+  #lp-footer{height:100vh;background:#0d2200;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;overflow:hidden}
+  #lp-footer::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(83,141,34,.18) 0%,transparent 70%)}
   .lp-footer-inner{position:relative;z-index:10}
-  .lp-footer-logo{font-family:'Cinzel',serif;font-size:1rem;letter-spacing:.25em;font-weight:700;color:#aad576;margin-bottom:2rem;display:flex;align-items:center;justify-content:center;gap:.6rem}
+  .lp-footer-logo{font-family:'Cinzel',serif;font-weight:400;font-size:1rem;letter-spacing:.25em;color:#aad576;margin-bottom:2rem;display:flex;align-items:center;justify-content:center;gap:.6rem}
   .lp-footer-logo img{width:32px;height:32px;object-fit:contain}
-  .lp-footer-tagline{font-family:'Cinzel',serif;font-size:clamp(2.2rem,5vw,4rem);max-width:700px;line-height:1.1;margin-bottom:2.5rem}
+  .lp-footer-tagline{font-family:'Cinzel',serif;font-weight:400;font-size:clamp(2.2rem,5vw,4rem);max-width:700px;line-height:1.1;margin-bottom:2.5rem}
   .lp-footer-tagline em{font-style:italic;color:#aad576}
   .lp-footer-links{display:flex;gap:2rem;justify-content:center;margin-bottom:3rem}
   .lp-footer-links a{color:rgba(255,255,255,.4);text-decoration:none;font-size:.8rem;letter-spacing:.05em;transition:color .2s;cursor:pointer}
@@ -90,13 +103,6 @@ const STYLE = `
   .lp-card:nth-child(2),.lp-tool:nth-child(2){animation-delay:.15s}
   .lp-card:nth-child(3),.lp-tool:nth-child(3){animation-delay:.25s}
   .lp-card:nth-child(4){animation-delay:.35s}
-  #s1{background:#1a4301}
-  #s2{background:#143601}
-  #s3{background:#f0ead2;color:#143601}
-  #s3 .lp-label{color:#538d22}
-  #s3 .lp-title{color:#143601}
-  #s3 .lp-sub{color:rgba(20,54,1,.55)}
-  #s4{background:#1a4301}
   @media(max-width:900px){.lp-grid4,.lp-tools-grid,.lp-comm-grid{grid-template-columns:1fr 1fr}.lp-grid3{grid-template-columns:1fr}.lp-cluster{padding:0 1.5rem}#lp-header{padding:1rem 1.5rem}.lp-h1{font-size:2.4rem}}
 `
 
@@ -109,26 +115,21 @@ export default function Home() {
   const currentIdx = useRef(0)
 
   useEffect(() => {
-    const sections = sectionsRef.current
-    const dots = dotsRef.current
+    const sections = sectionsRef.current.filter(Boolean)
+    const dots = dotsRef.current.filter(Boolean)
     const header = headerRef.current
     const progress = progressRef.current
     if (!sections.length) return
 
-    const scrollToSection = (idx) => {
-      sections[idx]?.scrollIntoView({ behavior: 'smooth' })
-    }
+    const scrollToSection = (idx) => sections[idx]?.scrollIntoView({ behavior: 'smooth' })
 
-    dots.forEach(dot => {
-      if (!dot) return
-      dot.addEventListener('click', () => scrollToSection(parseInt(dot.dataset.idx)))
-    })
+    dots.forEach(dot => dot.addEventListener('click', () => scrollToSection(parseInt(dot.dataset.idx))))
 
     const sectionObs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const idx = sections.indexOf(entry.target)
-          dots.forEach(d => d?.classList.remove('active'))
+          dots.forEach(d => d.classList.remove('active'))
           if (dots[idx]) dots[idx].classList.add('active')
           if (idx === 0) header?.classList.remove('scrolled')
           else header?.classList.add('scrolled')
@@ -141,8 +142,7 @@ export default function Home() {
     const cardObs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          const animatables = entry.target.querySelectorAll('.lp-card,.lp-tool,.lp-comm-hero')
-          animatables.forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 100))
+          entry.target.querySelectorAll('.lp-card,.lp-tool,.lp-comm-hero').forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 100))
           cardObs.unobserve(entry.target)
         }
       })
@@ -214,13 +214,12 @@ export default function Home() {
           <p className="lp-sub">Your personalised farming intelligence hub — from live crop prices to AI-curated insights.</p>
           <div className="lp-grid4">
             {[
-              { icon: '⬡', title: 'AI Farm Assistant', desc: 'Ask anything about soil, weather, pests, or yields. Get instant RAG-powered answers.', tag: 'AI Powered', to: '/assistant' },
-              { icon: '◈', title: 'User Dashboard', desc: 'One glance to see your field health, upcoming tasks, weather, and crop stages.', tag: 'Analytics', to: '/fields' },
-              { icon: '◎', title: 'Farming Queries', desc: 'Ask anything about soil, weather, pests, or yields. Get instant AI-powered answers.', tag: 'AI Powered', to: '/assistant' },
-              { icon: '◆', title: 'Find Best Crop', desc: 'Enter your soil type, climate and season — discover the most profitable crop for you.', tag: 'Smart Match', to: '/predictor' },
+              { title: 'AI Farm Assistant', desc: 'Ask anything about soil, weather, pests, or yields. Get instant RAG-powered answers from your farming knowledge base.', tag: 'AI Powered', to: '/assistant' },
+              { title: 'My Farm Dashboard', desc: 'One glance to see your field health, upcoming tasks, soil data, and crop stages across all your registered fields.', tag: 'Analytics', to: '/fields' },
+              { title: 'Crop Market', desc: 'Buy and sell crops directly with farmers nearby. List your produce or find fresh crops at fair prices.', tag: 'Live Market', to: '/market' },
+              { title: 'Find Best Crop', desc: 'Enter your soil type, climate and season — discover the most profitable crop for your exact conditions.', tag: 'Smart Match', to: '/predictor' },
             ].map(c => (
               <div key={c.title} className="lp-card" onClick={() => navigate(c.to)}>
-                <span className="lp-card-icon" style={{fontFamily:'monospace',fontSize:'1.6rem'}}>{c.icon}</span>
                 <div className="lp-card-title">{c.title}</div>
                 <div className="lp-card-desc">{c.desc}</div>
                 <span className="lp-card-tag">{c.tag}</span>
@@ -238,9 +237,9 @@ export default function Home() {
           <p className="lp-sub">Built for real decisions — simulate, track, and identify before it costs you.</p>
           <div className="lp-tools-grid">
             {[
-              { bg: 'linear-gradient(135deg,#1a4001 0%,#2d6b00 100%)', title: 'Crop Simulator', desc: 'Model planting timelines, expected yields, and growth stages before you sow a single seed.', cta: 'Try Simulator', to: '/simulator' },
-              { bg: 'linear-gradient(135deg,#0d2a00 0%,#1e5200 60%,#2a7000 100%)', title: 'Yield Predictor', desc: 'Log your soil, weather, and field data. Understand your true yield and maximise margins.', cta: 'Predict Yield', to: '/predictor' },
-              { bg: 'linear-gradient(135deg,#1c3800 0%,#355e00 100%)', title: 'Pest Identifier', desc: 'Photograph a leaf or describe symptoms — our AI diagnoses the pest or disease and recommends treatment.', cta: 'Identify Now', to: '/pest-health' },
+              { bg: 'linear-gradient(135deg,#143601 0%,#245501 100%)', title: 'Crop Simulator', desc: 'Model planting timelines, expected yields, and growth stages before you sow a single seed.', cta: 'Try Simulator', to: '/simulator' },
+              { bg: 'linear-gradient(135deg,#0d2200 0%,#1a4301 60%,#245501 100%)', title: 'Yield Predictor', desc: 'Enter your soil, weather, and field data. Get a precise yield and revenue forecast powered by AI.', cta: 'Predict Yield', to: '/predictor' },
+              { bg: 'linear-gradient(135deg,#1a4301 0%,#2d6b00 100%)', title: 'Pest Identifier', desc: 'Photograph a leaf or describe symptoms — our AI diagnoses the pest or disease and recommends treatment.', cta: 'Identify Now', to: '/pest-health' },
             ].map(t => (
               <div key={t.title} className="lp-tool" onClick={() => navigate(t.to)}>
                 <div className="lp-tool-bg" style={{background: t.bg}} />
@@ -267,11 +266,11 @@ export default function Home() {
           <p className="lp-sub">A living library built for farmers — curated by agronomists and updated continuously.</p>
           <div className="lp-grid3">
             {[
-              { title: 'Smart Learning', desc: 'Short lessons and interactive guides covering soil health, irrigation, IPM, and crop management techniques.', tag: '5 Courses', to: '/learn' },
-              { title: 'Crop Encyclopedia', desc: 'Detailed profiles for 43+ Indian crops — growth requirements, harvest windows, nutritional needs, and costs.', tag: '43+ Crops', to: '/crops' },
+              { title: 'Smart Learning', desc: 'Deep-dive courses on soil health, irrigation, IPM, crop planning, and farming economics — with quizzes that test real understanding.', tag: '5 Courses', to: '/learn' },
+              { title: 'Crop Encyclopedia', desc: 'Detailed profiles for 43+ Indian crops — growth requirements, harvest windows, real costs, and step-by-step cultivation guides.', tag: '43+ Crops', to: '/crops' },
               { title: 'Practices Wiki', desc: 'Proven and emerging farming practices — from organic certification to precision micro-irrigation, explained in plain language.', tag: 'Field Tested', to: '/practices' },
             ].map(c => (
-              <div key={c.title} className={`lp-card lp-card-light`} onClick={() => navigate(c.to)}>
+              <div key={c.title} className="lp-card lp-card-light" onClick={() => navigate(c.to)}>
                 <div className="lp-card-title">{c.title}</div>
                 <div className="lp-card-desc">{c.desc}</div>
                 <span className="lp-card-tag">{c.tag}</span>
@@ -300,7 +299,7 @@ export default function Home() {
             </div>
             <div className="lp-card" onClick={() => navigate('/experts')}>
               <div className="lp-card-title">Talk to Experts</div>
-              <div className="lp-card-desc">Book 1-on-1 sessions with certified agronomists, soil scientists, and crop specialists — available in regional languages.</div>
+              <div className="lp-card-desc">Connect with certified agronomists, soil scientists, and crop specialists. Send messages and get guidance in regional languages.</div>
               <span className="lp-card-tag">Live Consultation</span>
             </div>
             <div className="lp-card" onClick={() => navigate('/community')}>

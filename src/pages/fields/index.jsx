@@ -21,8 +21,8 @@ function FieldCard({ field }) {
           {field.location && <span className="text-[11px] font-medium px-3 py-1 rounded-full bg-vanilla text-ash border border-cream">{field.location}</span>}
         </div>
         <div className="mt-auto pt-4 border-t border-olive/20 flex items-center justify-between">
-          <Link to={`/fields/${field._id}`} className="text-[12px] font-bold text-forest hover:underline">View Details</Link>
-          <Link to={`/fields/${field._id}/edit`} className="text-[12px] font-medium text-ash hover:text-black-forest">Edit</Link>
+          <Link to={`/fields/${field._id || field.id}`} className="text-[12px] font-bold text-forest hover:underline">View Details</Link>
+          <Link to={`/fields/${field._id || field.id}/edit`} className="text-[12px] font-medium text-ash hover:text-black-forest">Edit</Link>
         </div>
       </div>
     </div>

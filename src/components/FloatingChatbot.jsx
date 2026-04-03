@@ -1,6 +1,9 @@
 ﻿import { useState, useRef, useEffect } from "react"
 import { BotMessageSquare, X, Send, Maximize2, Minimize2 } from "lucide-react"
+import { useLocation } from "react-router-dom"
 export default function FloatingChatbot() {
+  const location = useLocation()
+  const isLanding = location.pathname === "/"
   const [isOpen, setIsOpen] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [question, setQuestion] = useState("")
@@ -8,6 +11,7 @@ export default function FloatingChatbot() {
   const [loading, setLoading] = useState(false)
   const messagesEndRef = useRef(null)
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }) }, [chatHistory, isOpen, loading])
+  if (isLanding) return null
   const handleAsk = async (e) => {
     e.preventDefault()
     if (!question.trim()) return
