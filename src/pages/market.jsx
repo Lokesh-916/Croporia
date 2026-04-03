@@ -1,8 +1,114 @@
 import { useState, useEffect } from 'react'
+import { TrendingUp, TrendingDown, Minus, ChevronDown, ChevronUp } from 'lucide-react'
 import Navbar from '../components/Navbar'
 
 const API = 'http://localhost:5000/api/market'
+const PYTHON_API = 'http://localhost:8000'
 const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Crops', 'Herbs & Spices']
+
+const CROP_LIST = [
+  'Tomato','Brinjal','Okra','Chilli','Onion','Potato','Cauliflower','Cabbage','Spinach',
+  'Bitter Gourd','Bottle Gourd','Carrot','Mango','Banana','Papaya','Guava','Watermelon',
+  'Pomegranate','Coconut','Lemon','Sapota','Jackfruit','Rice','Wheat','Maize','Groundnut',
+  'Sunflower','Soybean','Cotton','Sugarcane','Turmeric','Red Gram','Blackgram'
+]
+
+function CropMonetizer() {
+  const [crop, setCrop] = useState('Tomato')
+  const [qty, setQty] = useState(100)
+  const [storageCost, setStorageCost] = useState(0.2)
+  const [result, setResult] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const analyze = async () => {
+    setLoading(true); setError(''); setResult(null)
+    try {
+      const res = await fetch(`${PYTHON_API}/monetizer/predict`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ crop_name: crop, quantity_kgs: qty, storage_cost_per_day: storageCost })
+      })
+      const data = await res.json()
+      if (!res.ok) setError(data.detail || 'Prediction failed')
+      else setResult(data)
+    } catch { setError('Cannot reach Python backend on port 8000.') }
+    finally { setLoading(false) }
+  }
+
+  const hold = result?.recommendation === 'HOLD FOR 14 DAYS'
+  const diff = result ? result.future_revenue - result.current_revenue : 0
+
+  return (
+    <div className="bg-white rounded-3xl border border-olive/30 shadow-sm p-6 mb-8">
+      <div className="flex items-center gap-3 mb-1">
+        <TrendingUp className="w-5 h-5 text-forest" />
+        <h2 className="font-cinzel font-bold text-xl text-black-forest">Crop Monetizer</h2>
+        <span className="text-[10px] font-bold bg-frosted text-forest border border-olive/30 px-2 py-0.5 rounded-full uppercase tracking-wide">Hold or Sell?</span>
+      </div>
+      <p className="text-sm text-ash mb-6">Enter your harvest details to get a 14-day price forecast and a data-driven recommendation on whether to sell now or wait.</p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+        <div>
+          <label className="block text-[11px] font-bold text-ash uppercase tracking-widest mb-2">Crop</label>
+          <select value={crop} onChange={e => setCrop(e.target.value)}
+            className="w-full border border-olive/40 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-forest bg-frosted/30">
+            {CROP_LIST.map(c => <option key={c}>{c}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="block text-[11px] font-bold text-ash uppercase tracking-widest mb-2">Quantity (kg)</label>
+          <input type="number" min={1} value={qty} onChange={e => setQty(Number(e.target.value))}
+            className="w-full border border-olive/40 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-forest bg-frosted/30" />
+        </div>
+        <div>
+          <label className="block text-[11px] font-bold text-ash uppercase tracking-widest mb-2">Storage Cost (Rs/kg/day)</label>
+          <input type="number" min={0} step={0.05} value={storageCost} onChange={e => setStorageCost(Number(e.target.value))}
+            className="w-full border border-olive/40 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-forest bg-frosted/30" />
+        </div>
+      </div>
+
+      <button onClick={analyze} disabled={loading}
+        className="px-6 py-2.5 bg-black-forest hover:bg-forest text-white font-bold rounded-xl text-sm transition-colors disabled:opacity-60 flex items-center gap-2">
+        {loading ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Analyzing...</> : 'Analyze Strategy'}
+      </button>
+
+      {error && <p className="mt-3 text-xs text-red-600 font-semibold">{error}</p>}
+
+      {result && (
+        <div className="mt-6">
+          <div className={`rounded-2xl p-5 mb-5 border ${hold ? 'bg-frosted border-forest/30' : 'bg-vanilla border-copper/30'}`}>
+            <div className="flex items-center gap-3 mb-2">
+              {hold ? <TrendingUp className="w-6 h-6 text-forest" /> : <TrendingDown className="w-6 h-6 text-copper" />}
+              <p className={`font-cinzel font-black text-lg ${hold ? 'text-forest' : 'text-copper'}`}>{result.recommendation}</p>
+            </div>
+            <p className="text-sm text-ash">
+              {hold
+                ? `Storing your ${crop.toLowerCase()} for 14 days is estimated to earn you Rs.${Math.abs(diff).toLocaleString('en-IN', {maximumFractionDigits:0})} more, even after Rs.${result.total_storage_cost.toLocaleString('en-IN', {maximumFractionDigits:0})} in storage costs.`
+                : `The market trend is flat or falling. Selling now saves you from an estimated Rs.${Math.abs(diff).toLocaleString('en-IN', {maximumFractionDigits:0})} loss compared to holding for 14 days.`
+              }
+            </p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: 'Current Price', value: `Rs.${result.current_price}/kg`, sub: null },
+              { label: 'Projected Price (14d)', value: `Rs.${result.projected_price}/kg`, sub: result.trend_slope > 0 ? `+${result.trend_slope} trend` : `${result.trend_slope} trend` },
+              { label: 'Revenue if Sell Now', value: `Rs.${result.current_revenue.toLocaleString('en-IN', {maximumFractionDigits:0})}`, sub: null },
+              { label: 'Revenue if Hold', value: `Rs.${result.future_revenue.toLocaleString('en-IN', {maximumFractionDigits:0})}`, sub: `after Rs.${result.total_storage_cost.toLocaleString('en-IN', {maximumFractionDigits:0})} storage` },
+            ].map(({ label, value, sub }) => (
+              <div key={label} className="bg-frosted rounded-xl px-4 py-3 border border-olive/20">
+                <p className="text-[10px] font-bold text-ash uppercase tracking-widest mb-1">{label}</p>
+                <p className="text-sm font-black text-black-forest">{value}</p>
+                {sub && <p className="text-[10px] text-ash mt-0.5">{sub}</p>}
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-ash mt-3">Prices are based on current market baselines with a 30-day trend model. This is a forecast, not a guarantee.</p>
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function Market() {
   const [listings, setListings] = useState([])
@@ -69,6 +175,8 @@ export default function Market() {
     <div className="bg-vanilla min-h-screen font-sans text-black-forest">
       <Navbar />
       <main className="max-w-6xl mx-auto px-6 py-8 pb-16">
+        {/* Crop Monetizer — farmers only */}
+        {user && user.role !== 'Expert' && <CropMonetizer />}
         <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-forest/80 mb-2">Croporia - Market</p>

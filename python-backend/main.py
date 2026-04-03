@@ -165,6 +165,63 @@ def plant_health_assessment(image: UploadFile = File(..., description="Plant or 
   )
 
 
+
+# ── Crop Monetizer ────────────────────────────────────────────────────────────
+
+import numpy as np
+import pandas as pd
+
+CROP_PRICES_KG = {
+  "tomato": 35.0, "brinjal": 30.0, "okra": 40.0, "chilli": 60.0, "onion": 30.0,
+  "potato": 25.0, "cauliflower": 45.0, "cabbage": 30.0, "spinach": 20.0,
+  "bitter gourd": 50.0, "bottle gourd": 25.0, "carrot": 40.0,
+  "mango": 80.0, "banana": 40.0, "papaya": 30.0, "guava": 50.0, "watermelon": 20.0,
+  "pomegranate": 120.0, "coconut": 40.0, "lemon": 60.0, "sapota": 40.0, "jackfruit": 30.0,
+  "rice": 50.0, "wheat": 30.0, "maize": 25.0, "groundnut": 80.0, "sunflower": 90.0,
+  "soybean": 55.0, "cotton": 100.0, "sugarcane": 5.0, "turmeric": 150.0,
+  "red gram": 120.0, "blackgram": 110.0,
+}
+
+class PriceRequest(BaseModel):
+  crop_name: str
+  quantity_kgs: float
+  storage_cost_per_day: float
+
+@app.post("/monetizer/predict", tags=["monetizer"])
+def predict_crop_price(payload: PriceRequest) -> dict:
+  """Hold-or-sell recommendation based on 14-day price projection."""
+  crop = payload.crop_name.lower().strip()
+  if crop not in CROP_PRICES_KG:
+    raise HTTPException(status_code=400, detail=f"Crop '{payload.crop_name}' not in price database.")
+  np.random.seed(42)
+  dates = pd.date_range(end=pd.Timestamp.today(), periods=30)
+  base = CROP_PRICES_KG[crop]
+  trend = np.linspace(base * 0.9, base * 1.1, 30)
+  prices = trend + np.random.normal(0, base * 0.05, 30)
+  df = pd.DataFrame({"date": dates, "price": prices})
+  sma = df["price"].rolling(window=7).mean().dropna().values
+  slope = float((sma[-1] - sma[0]) / (len(sma) - 1)) if len(sma) >= 2 else 0.0
+  current_price = float(df["price"].iloc[-1])
+  projected_price = max(current_price + slope * 14, 0.0)
+  current_revenue = current_price * payload.quantity_kgs
+  storage_cost = payload.storage_cost_per_day * 14 * payload.quantity_kgs
+  future_revenue = projected_price * payload.quantity_kgs - storage_cost
+  return {
+    "crop_name": payload.crop_name,
+    "current_price": round(current_price, 2),
+    "projected_price": round(projected_price, 2),
+    "trend_slope": round(slope, 2),
+    "current_revenue": round(current_revenue, 2),
+    "total_storage_cost": round(storage_cost, 2),
+    "future_revenue": round(future_revenue, 2),
+    "recommendation": "HOLD FOR 14 DAYS" if future_revenue > current_revenue else "SELL NOW",
+  }
+
+@app.get("/monetizer/crops", tags=["monetizer"])
+def list_supported_crops() -> dict:
+  return {"crops": sorted(CROP_PRICES_KG.keys())}
+
+
 if __name__ == "__main__":
   # This block is only for local development convenience.
   # Preferred: `uvicorn python_backend.main:app --reload`
