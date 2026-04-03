@@ -4,29 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crop Predictor — Smart Farm Advisor</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --cream: #F5F0E8;
-  --deep-green: #1A3A2A;
-  --mid-green: #2D5A3D;
-  --light-green: #4A8C5C;
-  --accent-gold: #C8A84B;
-  --accent-amber: #E8930A;
-  --soft-brown: #8B6F47;
-  --text-dark: #1A1A14;
-  --text-mid: #4A4A3A;
-  --text-muted: #8A8A78;
-  --card-bg: #FDFAF4;
-  --border: rgba(26,58,42,0.12);
+  --cream: #f0ead2;
+  --deep-green: #143601;
+  --mid-green: #245501;
+  --light-green: #538d22;
+  --accent-gold: #a98467;
+  --accent-amber: #718355;
+  --soft-brown: #6c584c;
+  --text-dark: #143601;
+  --text-mid: #6c584c;
+  --text-muted: #97a97c;
+  --card-bg: #f0ead2;
+  --border: rgba(20,54,1,0.12);
   --red-risk: #C94040;
-  --yellow-risk: #D4A017;
-  --green-risk: #2D7A3A;
+  --yellow-risk: #a98467;
+  --green-risk: #245501;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   background: var(--cream);
   color: var(--text-dark);
   min-height: 100vh;
@@ -75,7 +75,7 @@ body::before {
   margin-bottom: 18px;
 }
 .header h1 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cinzel', serif;
   font-size: clamp(32px, 5vw, 48px);
   font-weight: 700;
   color: var(--deep-green);
@@ -139,7 +139,7 @@ body::before {
   border-radius: 10px;
   background: #fff;
   color: var(--text-dark);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
   transition: border-color 0.2s, box-shadow 0.2s;
   appearance: none;
@@ -204,7 +204,7 @@ body::before {
   color: var(--accent-gold);
   border: none;
   border-radius: 12px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -248,7 +248,7 @@ body::before {
   gap: 8px;
 }
 .results-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cinzel', serif;
   font-size: 24px;
   font-weight: 700;
   color: var(--deep-green);
@@ -293,7 +293,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cinzel', serif;
   font-size: 18px;
   font-weight: 700;
   flex-shrink: 0;
@@ -311,7 +311,7 @@ body::before {
   margin-bottom: 6px;
 }
 .crop-name {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cinzel', serif;
   font-size: 17px;
   font-weight: 600;
   color: var(--deep-green);
@@ -404,7 +404,7 @@ body::before {
 }
 .sum-item { flex: 1; min-width: 100px; }
 .sum-item .s-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.6; margin-bottom: 4px; }
-.sum-item .s-val { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; color: var(--accent-gold); }
+.sum-item .s-val { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 600; color: var(--accent-gold); }
 .sum-item .s-sub { font-size: 12px; opacity: 0.75; }
 
 /* Footer note */

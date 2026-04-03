@@ -11,10 +11,13 @@ const MOCK_MESSAGES = [
 ]
 
 const PEER_EXPERTS = [
-  { name: 'Dr. Santosh Verma', specialization: 'Soil & Nutrient Management', region: 'Punjab', status: 'online' },
-  { name: 'Anita Kulkarni', specialization: 'Fruit Orchard Specialist', region: 'Maharashtra', status: 'away' },
-  { name: 'Rahul Menon', specialization: 'Climate-Smart Farming', region: 'Karnataka', status: 'offline' },
+  { id: 'p1', name: 'Dr. Santosh Verma', specialization: 'Soil & Nutrient Management', region: 'Punjab', status: 'online' },
+  { id: 'p2', name: 'Anita Kulkarni', specialization: 'Fruit Orchard Specialist', region: 'Maharashtra', status: 'away' },
+  { id: 'p3', name: 'Rahul Menon', specialization: 'Climate-Smart Farming', region: 'Karnataka', status: 'offline' },
+  { id: 'p4', name: 'Dr. Asha Nair', specialization: 'Plant Protection & IPM', region: 'Andhra Pradesh', status: 'online' },
 ]
+
+const STATUS_COLOR = { online: 'bg-forest', away: 'bg-copper', offline: 'bg-ash/40' }
 
 export default function ExpertDashboard() {
   const user = JSON.parse(localStorage.getItem('croporia_user') || 'null')
@@ -22,6 +25,9 @@ export default function ExpertDashboard() {
   const [activeMsg, setActiveMsg] = useState(null)
   const [reply, setReply] = useState('')
   const [replySent, setReplySent] = useState(false)
+  const [peerChat, setPeerChat] = useState(null)
+  const [peerMsg, setPeerMsg] = useState('')
+  const [peerHistory, setPeerHistory] = useState({})
 
   const unread = messages.filter(m => !m.read).length
 
@@ -35,6 +41,21 @@ export default function ExpertDashboard() {
   const sendReply = () => {
     if (!reply.trim()) return
     setReplySent(true)
+  }
+
+  const openPeerChat = (expert) => {
+    setPeerChat(expert)
+    setPeerMsg('')
+  }
+
+  const sendPeerMsg = () => {
+    if (!peerMsg.trim()) return
+    const key = peerChat.id
+    setPeerHistory(prev => ({
+      ...prev,
+      [key]: [...(prev[key] || []), { from: 'me', text: peerMsg, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]
+    }))
+    setPeerMsg('')
   }
 
   return (
@@ -98,27 +119,25 @@ export default function ExpertDashboard() {
           <div className="bg-white rounded-3xl border border-olive/30 shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-olive/20">
               <h2 className="font-cinzel font-bold text-black-forest">Fellow Experts</h2>
-              <p className="text-xs text-ash mt-0.5">Connect and collaborate with other specialists</p>
+              <p className="text-xs text-ash mt-0.5">Message your peers directly</p>
             </div>
             <div className="divide-y divide-olive/10">
               {PEER_EXPERTS.map(expert => (
-                <div key={expert.name} className="px-6 py-4 flex items-center gap-3">
+                <div key={expert.id} className="px-6 py-4 flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-10 h-10 rounded-full bg-frosted border border-olive/30 flex items-center justify-center text-sm font-bold text-forest">
-                      {expert.name[0]}
-                    </div>
-                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white ${expert.status === 'online' ? 'bg-forest' : expert.status === 'away' ? 'bg-copper' : 'bg-ash/40'}`} />
+                    <div className="w-10 h-10 rounded-full bg-frosted border border-olive/30 flex items-center justify-center text-sm font-bold text-forest">{expert.name[0]}</div>
+                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white ${STATUS_COLOR[expert.status]}`} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-black-forest truncate">{expert.name}</p>
                     <p className="text-[11px] text-ash truncate">{expert.specialization}</p>
                   </div>
-                  <span className="text-[10px] text-ash">{expert.region}</span>
+                  <button onClick={() => openPeerChat(expert)}
+                    className="text-[11px] font-bold px-3 py-1.5 bg-frosted border border-olive/30 text-forest rounded-full hover:bg-tea transition-colors flex items-center gap-1">
+                    <MessageSquare className="w-3 h-3" /> Chat
+                  </button>
                 </div>
               ))}
-            </div>
-            <div className="px-6 py-4 border-t border-olive/10">
-              <p className="text-xs text-ash text-center">Real-time expert chat coming soon</p>
             </div>
           </div>
         </div>
@@ -158,6 +177,50 @@ export default function ExpertDashboard() {
                 </button>
               </>
             )}
+          </div>
+        </div>
+      )}
+      {/* Peer Chat Modal */}
+      {peerChat && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl border border-olive/30 shadow-2xl w-full max-w-md flex flex-col" style={{ height: '480px' }}>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-olive/20">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="w-9 h-9 rounded-full bg-frosted border border-olive/30 flex items-center justify-center text-sm font-bold text-forest">{peerChat.name[0]}</div>
+                  <span className={`absolute bottom-0 right-0 w-2 h-2 rounded-full border-2 border-white ${STATUS_COLOR[peerChat.status]}`} />
+                </div>
+                <div>
+                  <p className="font-cinzel font-bold text-black-forest text-sm">{peerChat.name}</p>
+                  <p className="text-[11px] text-ash">{peerChat.specialization}</p>
+                </div>
+              </div>
+              <button onClick={() => setPeerChat(null)} className="w-8 h-8 flex items-center justify-center rounded-full border border-olive/40 text-ash hover:bg-frosted">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3 bg-frosted/20">
+              {!(peerHistory[peerChat.id]?.length) && (
+                <div className="text-center text-xs text-ash py-8">Start a conversation with {peerChat.name.split(' ')[0]}</div>
+              )}
+              {(peerHistory[peerChat.id] || []).map((m, i) => (
+                <div key={i} className="flex justify-end">
+                  <div className="max-w-[80%] bg-forest text-white rounded-2xl rounded-br-sm px-4 py-2.5 text-sm">
+                    <p>{m.text}</p>
+                    <p className="text-[10px] text-white/60 mt-1 text-right">{m.time}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="px-4 py-3 border-t border-olive/20 bg-white flex gap-2">
+              <input value={peerMsg} onChange={e => setPeerMsg(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && sendPeerMsg()}
+                placeholder={`Message ${peerChat.name.split(' ')[0]}...`}
+                className="flex-1 bg-frosted/50 border border-olive/40 rounded-full px-4 py-2.5 text-sm text-black-forest outline-none focus:border-forest" />
+              <button onClick={sendPeerMsg} className="w-10 h-10 bg-forest hover:bg-black-forest text-white rounded-full flex items-center justify-center transition-colors">
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       )}
