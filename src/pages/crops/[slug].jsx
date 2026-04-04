@@ -87,22 +87,7 @@ export default function CropDetail() {
                 "{crop.summary}"
               </p>
             </div>
-            {/* Visual anchor */}
-            <div className="hidden md:flex w-48 h-48 items-center justify-center">
-              {crop.slug === 'tomato' ? (
-                <div className="relative w-48 h-48">
-                  <img
-                    src="/tomato.png"
-                    alt="Tomato"
-                    className="w-48 h-48 object-contain drop-shadow-2xl"
-                  />
-                </div>
-              ) : (
-                <div className="w-48 h-48 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border-4 border-white/20">
-                  <span className="text-white text-9xl font-black opacity-30 select-none uppercase">{crop.name.charAt(0)}</span>
-                </div>
-              )}
-            </div>
+
           </div>
         </div>
       </div>
