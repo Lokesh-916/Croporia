@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../dashboard/hooks/useStore'
 import { fmt, fmtK, fmtD, sum, daysFrom, lastNMonths, uid, today, isOverdue, calcEMI } from '../dashboard/utils/helpers'
@@ -43,16 +43,33 @@ function SectionHeader({ title, sub, action }) {
   )
 }
 // ── Dashboard Overview ──────────────────────────────────────────────────────
-function DashboardPage({ store, onNav }) {
-  const { fields, expenses, yields, loans, tasks } = store
+function DashboardPage({ store, onNav, regFields = [] }) {
+  const { expenses, yields, loans, tasks } = store
   const totalRev = useMemo(() => sum(yields.data, y => y.revenue), [yields.data])
   const totalExp = useMemo(() => sum(expenses.data, e => e.amount), [expenses.data])
   const profit = totalRev - totalExp
   const loanBal = useMemo(() => sum(loans.data, l => l.principal - l.paid), [loans.data])
   const pending = tasks.data.filter(t => !t.done).length
   const months = lastNMonths(6)
-  const expArr = [18000, 22000, 15000, 28000, 19000, sum(expenses.data, e => e.amount) || 12000]
-  const revArr = [25000, 30000, 20000, 45000, 28000, totalRev || 0]
+  // Build real monthly expense/revenue arrays from actual data
+  const expArr = useMemo(() => {
+    const now = new Date()
+    return Array.from({length: 6}, (_, i) => {
+      const m = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1)
+      return sum(expenses.data.filter(e => {
+        const d = new Date(e.date); return d.getFullYear() === m.getFullYear() && d.getMonth() === m.getMonth()
+      }), e => e.amount)
+    })
+  }, [expenses.data])
+  const revArr = useMemo(() => {
+    const now = new Date()
+    return Array.from({length: 6}, (_, i) => {
+      const m = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1)
+      return sum(yields.data.filter(y => {
+        const d = new Date(y.date); return d.getFullYear() === m.getFullYear() && d.getMonth() === m.getMonth()
+      }), y => y.revenue)
+    })
+  }, [yields.data])
   const barChart = { type: 'bar', data: { labels: months, datasets: [{ label: 'Expenses', data: expArr, backgroundColor: 'rgba(169,132,103,.7)', borderRadius: 5, borderSkipped: false }, { label: 'Revenue', data: revArr, backgroundColor: 'rgba(83,141,34,.7)', borderRadius: 5, borderSkipped: false }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => 'Rs' + Math.round(v / 1000) + 'k', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,.04)' } }, x: { grid: { display: false }, ticks: { font: { size: 10 } } } } } }
   const byCrop = yields.data.reduce((a, y) => { a[y.crop] = (a[y.crop] || 0) + Number(y.revenue); return a }, {})
   const cropKeys = Object.keys(byCrop)
@@ -89,20 +106,26 @@ function DashboardPage({ store, onNav }) {
             <button onClick={() => onNav('fields')} className="text-xs text-forest font-semibold hover:underline flex items-center gap-1">View all <ChevronRight className="w-3 h-3" /></button>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {fields.data.slice(0, 4).map(f => {
-              const dh = daysFrom(f.harv)
+            {regFields.slice(0, 4).map(f => {
+              const crop = f.cropPlans?.[0]?.cropName || 'Fallow'
+              const color = CROP_COLORS[crop] || '#538d22'
               return (
-                <div key={f.id} className="bg-white rounded-xl border border-olive/20 p-3 overflow-hidden relative">
-                  <div className="absolute top-0 left-0 right-0 h-1" style={{ background: f.color }} />
+                <div key={f._id} className="bg-white rounded-xl border border-olive/20 p-3 overflow-hidden relative">
+                  <div className="absolute top-0 left-0 right-0 h-1" style={{ background: color }} />
                   <p className="font-semibold text-sm text-black-forest mt-1">{f.name}</p>
-                  <p className="text-[11px] text-ash">{f.acres} ac · {f.soil}</p>
+                  <p className="text-[11px] text-ash">{f.area?.value} {f.area?.unit} · {f.soilDetails?.type || '—'}</p>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: f.color + '20', color: f.color }}>{f.crop}</span>
-                    <span className="text-[11px] text-ash">{dh != null ? (dh > 0 ? dh + 'd' : 'Due!') : '—'}</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: color + '20', color }}>{crop}</span>
+                    <span className="text-[11px] text-ash">{f.location || '—'}</span>
                   </div>
                 </div>
               )
             })}
+            {regFields.length === 0 && (
+              <div className="col-span-2 bg-white rounded-xl border border-dashed border-olive/30 p-6 text-center text-ash text-sm">
+                No fields yet. <a href="/fields/new" className="text-forest font-semibold underline">Register one →</a>
+              </div>
+            )}
           </div>
         </div>
         <div>
@@ -129,53 +152,63 @@ function DashboardPage({ store, onNav }) {
 }
 
 // ── Fields Page ──────────────────────────────────────────────────────────────
-function FieldsPage({ store }) {
-  const { fields, expenses, yields } = store
+function FieldsPage({ store, regFields = [] }) {
+  const { expenses, yields } = store
   const [modal, setModal] = useState(false)
-  const totalAcres = fields.data.reduce((s, f) => s + Number(f.acres), 0)
+
+  const totalAcres = regFields.reduce((s, f) => s + (f.area?.value || 0), 0)
+
   return (
     <div className="space-y-5">
-      <SectionHeader title="Fields & Plots" sub="Track each field performance, crop status and harvest schedule" action={<button onClick={() => setModal(true)} className="flex items-center gap-1.5 px-4 py-2 bg-black-forest hover:bg-forest text-white text-sm font-semibold rounded-xl transition-colors"><Plus className="w-4 h-4" />Add Field</button>} />
+      <SectionHeader title="Fields & Plots" sub="Your registered fields from My Farm" action={
+        <a href="/fields/new" className="flex items-center gap-1.5 px-4 py-2 bg-black-forest hover:bg-forest text-white text-sm font-semibold rounded-xl transition-colors">
+          <Plus className="w-4 h-4" />Register Field
+        </a>
+      } />
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <MetricCard label="Total Fields" value={fields.data.length} />
-        <MetricCard label="Total Acres" value={totalAcres.toFixed(1)} />
-        <MetricCard label="Crops Growing" value={[...new Set(fields.data.map(f => f.crop).filter(c => c !== 'Fallow'))].length} />
-        <MetricCard label="Harvest Soon" value={fields.data.filter(f => { const d = daysFrom(f.harv); return d != null && d <= 21 && d >= 0 }).length} color="bg-vanilla" />
+        <MetricCard label="Total Fields" value={regFields.length} />
+        <MetricCard label="Total Area" value={totalAcres.toFixed(1) + ' ac'} />
+        <MetricCard label="Crops Growing" value={[...new Set(regFields.flatMap(f => f.cropPlans?.map(c => c.cropName)).filter(Boolean).filter(c => c !== 'Fallow' && c !== 'Nothing yet / Fallow'))].length} />
+        <MetricCard label="Locations" value={[...new Set(regFields.map(f => f.location).filter(Boolean))].length} />
       </div>
-      {fields.data.length === 0 && <div className="bg-white rounded-2xl border border-dashed border-olive/40 p-10 text-center text-ash">No fields yet. Add your first field to get started.</div>}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {fields.data.map(f => {
-          const fe = sum(expenses.data.filter(e => e.field === f.name), e => e.amount)
-          const fr = sum(yields.data.filter(y => y.field === f.name), y => y.revenue)
-          const fp = fr - fe; const dh = daysFrom(f.harv)
-          return (
-            <div key={f.id} className="bg-white rounded-2xl border border-olive/20 overflow-hidden">
-              <div className="h-1.5" style={{ background: f.color }} />
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <div><p className="font-cinzel font-medium text-black-forest">{f.name}</p><p className="text-[11px] text-ash">{f.acres} acres · {f.soil} · Sown {fmtD(f.sow)}</p></div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: f.color + '20', color: f.color }}>{f.crop}</span>
-                    <button onClick={() => fields.remove(f.id)} className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-50 text-ash hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
+      {regFields.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-dashed border-olive/40 p-10 text-center text-ash">
+          No fields registered yet. <a href="/fields/new" className="text-forest font-semibold underline ml-1">Register your first field →</a>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {regFields.map(f => {
+            const crop = f.cropPlans?.[0]?.cropName || 'Fallow'
+            const status = f.cropPlans?.[0]?.status || ''
+            const color = CROP_COLORS[crop] || '#538d22'
+            const fe = sum(expenses.data.filter(e => e.field === f.name), e => e.amount)
+            const fr = sum(yields.data.filter(y => y.field === f.name), y => y.revenue)
+            return (
+              <div key={f._id} className="bg-white rounded-2xl border border-olive/20 overflow-hidden">
+                <div className="h-1.5" style={{ background: color }} />
+                <div className="p-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <p className="font-cinzel font-medium text-black-forest">{f.name}</p>
+                      <p className="text-[11px] text-ash">{f.area?.value} {f.area?.unit} · {f.soilDetails?.type || 'Unknown soil'} · {f.location}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: color + '20', color }}>{crop}</span>
+                      <a href={`/fields/${f._id}/edit`} className="text-[11px] text-ash hover:text-forest font-medium">Edit</a>
+                    </div>
+                  </div>
+                  {status && <p className="text-[11px] text-ash mb-3">Status: <span className="font-semibold text-forest">{status}</span></p>}
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    {[['Expenses', fmt(fe), 'text-copper'], ['Revenue', fmt(fr), 'text-forest'], ['Profit', (fr-fe >= 0 ? '+' : '') + fmt(fr-fe), fr-fe >= 0 ? 'text-forest' : 'text-red-500']].map(([l, v, c]) => (
+                      <div key={l} className="bg-frosted rounded-lg py-2"><p className={`text-xs font-bold ${c}`}>{v}</p><p className="text-[10px] text-ash">{l}</p></div>
+                    ))}
                   </div>
                 </div>
-                {f.notes && <p className="text-[11px] text-ash italic mb-3">{f.notes}</p>}
-                <div className="grid grid-cols-4 gap-2 text-center">
-                  {[['Expenses', fmt(fe), 'text-copper'], ['Revenue', fmt(fr), 'text-forest'], ['Profit', (fp >= 0 ? '+' : '') + fmt(fp), fp >= 0 ? 'text-forest' : 'text-red-500'], ['Harvest', dh != null ? (dh > 0 ? dh + 'd' : 'Due!') : '—', dh != null && dh <= 14 ? 'text-copper' : 'text-black-forest']].map(([l, v, c]) => (
-                    <div key={l} className="bg-frosted rounded-lg py-2"><p className={`text-xs font-bold ${c}`}>{v}</p><p className="text-[10px] text-ash">{l}</p></div>
-                  ))}
-                </div>
               </div>
-            </div>
-          )
-        })}
-      </div>
-      <Modal open={modal} onClose={() => setModal(false)} title="Add Field / Plot" footer={<><button onClick={() => setModal(false)} className="px-4 py-2 rounded-xl border border-olive/40 text-ash text-sm font-semibold hover:bg-frosted">Cancel</button><button onClick={() => { const name = document.getElementById('f-name').value.trim(); if (!name) { alert('Enter field name'); return } fields.add({ id: uid(), name, acres: Number(document.getElementById('f-acres').value) || 1, crop: document.getElementById('f-crop').value, soil: document.getElementById('f-soil').value, sow: document.getElementById('f-sow').value || today(), harv: document.getElementById('f-harv').value || today(), notes: document.getElementById('f-notes').value, color: CROP_COLORS[document.getElementById('f-crop').value] || '#538d22' }); setModal(false) }} className="px-4 py-2 rounded-xl bg-black-forest hover:bg-forest text-white text-sm font-semibold">Save Field</button></>}>
-        <div className="grid grid-cols-2 gap-3"><div><label className={lbl}>Field Name</label><input id="f-name" className={inp} placeholder="e.g. North Field" /></div><div><label className={lbl}>Area (Acres)</label><input id="f-acres" type="number" className={inp} placeholder="0.0" step="0.1" /></div></div>
-        <div className="grid grid-cols-2 gap-3"><div><label className={lbl}>Current Crop</label><select id="f-crop" className={sel}>{FIELD_CROPS.map(c => <option key={c}>{c}</option>)}</select></div><div><label className={lbl}>Soil Type</label><select id="f-soil" className={sel}>{SOIL_TYPES.map(s => <option key={s}>{s}</option>)}</select></div></div>
-        <div className="grid grid-cols-2 gap-3"><div><label className={lbl}>Sowing Date</label><input id="f-sow" type="date" className={inp} defaultValue={today()} /></div><div><label className={lbl}>Expected Harvest</label><input id="f-harv" type="date" className={inp} /></div></div>
-        <div><label className={lbl}>Notes</label><textarea id="f-notes" className={inp + ' resize-none'} rows={2} placeholder="Any notes about this field..." /></div>
-      </Modal>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
@@ -232,7 +265,7 @@ function LoansPage({ store }) {
 }
 
 // ── Yields Page ───────────────────────────────────────────────────────────────
-function YieldsPage({ store }) {
+function YieldsPage({ store, regFields = [] }) {
   const { yields, fields } = store
   const [modal, setModal] = useState(false)
   const totalRev = sum(yields.data, y => y.revenue)
@@ -266,7 +299,7 @@ function YieldsPage({ store }) {
         </div>
       </div>
       <Modal open={modal} onClose={() => setModal(false)} title="Record Yield / Sale" footer={<><button onClick={() => setModal(false)} className="px-4 py-2 rounded-xl border border-olive/40 text-ash text-sm font-semibold hover:bg-frosted">Cancel</button><button onClick={() => { const kg = Number(document.getElementById('y-kg').value), price = Number(document.getElementById('y-price').value); if (!kg || !price) { alert('Enter yield and price'); return } yields.add({ id: uid(), crop: document.getElementById('y-crop').value, field: document.getElementById('y-field').value, kg, price, revenue: kg * price, date: document.getElementById('y-date').value || today(), buyer: document.getElementById('y-buyer').value }); setModal(false) }} className="px-4 py-2 rounded-xl bg-black-forest hover:bg-forest text-white text-sm font-semibold">Save</button></>}>
-        <div className="grid grid-cols-2 gap-3"><div><label className={lbl}>Crop</label><select id="y-crop" className={sel}>{CROPS.map(c => <option key={c}>{c}</option>)}</select></div><div><label className={lbl}>Field</label><select id="y-field" className={sel}>{fields.data.map(f => <option key={f.id}>{f.name}</option>)}</select></div></div>
+        <div className="grid grid-cols-2 gap-3"><div><label className={lbl}>Crop</label><select id="y-crop" className={sel}>{CROPS.map(c => <option key={c}>{c}</option>)}</select></div><div><label className={lbl}>Field</label><select id="y-field" className={sel}><option value="">— Select field —</option>{regFields.map(f => <option key={f._id} value={f.name}>{f.name}</option>)}</select></div></div>
         <div className="grid grid-cols-3 gap-3"><div><label className={lbl}>Yield (kg)</label><input id="y-kg" type="number" className={inp} placeholder="0" /></div><div><label className={lbl}>Price (Rs/kg)</label><input id="y-price" type="number" className={inp} placeholder="0" /></div><div><label className={lbl}>Date</label><input id="y-date" type="date" className={inp} defaultValue={today()} /></div></div>
         <div><label className={lbl}>Sold To</label><input id="y-buyer" className={inp} placeholder="e.g. APMC Vijayawada" /></div>
       </Modal>
@@ -275,7 +308,7 @@ function YieldsPage({ store }) {
 }
 
 // ── Diary Page ────────────────────────────────────────────────────────────────
-function DiaryPage({ store }) {
+function DiaryPage({ store, regFields = [] }) {
   const { diary, tasks } = store
   const [modal, setModal] = useState(null)
   const [dv, setDv] = useState({ date: today(), weather: 'Sunny', crop: 'Rice', stage: 'Vegetative', work: '', prob: '' })
@@ -334,7 +367,7 @@ function DiaryPage({ store }) {
 }
 
 // ── Expenses Page ─────────────────────────────────────────────────────────────
-function ExpensesPage({ store }) {
+function ExpensesPage({ store, regFields = [] }) {
   const { expenses, fields } = store
   const [modal, setModal] = useState(false)
   const total = sum(expenses.data, e => e.amount)
@@ -370,7 +403,7 @@ function ExpensesPage({ store }) {
       <Modal open={modal} onClose={() => setModal(false)} title="Add Expense" footer={<><button onClick={() => setModal(false)} className="px-4 py-2 rounded-xl border border-olive/40 text-ash text-sm font-semibold hover:bg-frosted">Cancel</button><button onClick={() => { const amt = Number(document.getElementById('ea').value); if (!amt) { alert('Enter amount'); return } expenses.add({ id: uid(), date: document.getElementById('ed').value || today(), amount: amt, cat: document.getElementById('ec').value, crop: document.getElementById('ecrop').value, field: document.getElementById('ef').value, pay: document.getElementById('ep').value, desc: document.getElementById('edesc').value }); setModal(false) }} className="px-4 py-2 rounded-xl bg-black-forest hover:bg-forest text-white text-sm font-semibold">Save</button></>}>
         <div className="grid grid-cols-2 gap-3"><div><label className={lbl}>Date</label><input id="ed" type="date" className={inp} defaultValue={today()} /></div><div><label className={lbl}>Amount (Rs)</label><input id="ea" type="number" className={inp} placeholder="0" /></div></div>
         <div className="grid grid-cols-2 gap-3"><div><label className={lbl}>Category</label><select id="ec" className={sel}>{EXPENSE_CATEGORIES.map(c => <option key={c}>{c}</option>)}</select></div><div><label className={lbl}>Crop</label><select id="ecrop" className={sel}>{CROPS.map(c => <option key={c}>{c}</option>)}</select></div></div>
-        <div className="grid grid-cols-2 gap-3"><div><label className={lbl}>Field</label><select id="ef" className={sel}>{fields.data.map(f => <option key={f.id}>{f.name}</option>)}</select></div><div><label className={lbl}>Payment</label><select id="ep" className={sel}>{PAYMENT_METHODS.map(p => <option key={p}>{p}</option>)}</select></div></div>
+        <div className="grid grid-cols-2 gap-3"><div><label className={lbl}>Field</label><select id="ef" className={sel}><option value="">— Select field —</option>{regFields.map(f => <option key={f._id} value={f.name}>{f.name}</option>)}</select></div><div><label className={lbl}>Payment</label><select id="ep" className={sel}>{PAYMENT_METHODS.map(p => <option key={p}>{p}</option>)}</select></div></div>
         <div><label className={lbl}>Description</label><input id="edesc" className={inp} placeholder="e.g. DAP fertilizer 50kg" /></div>
       </Modal>
     </div>
@@ -441,11 +474,29 @@ export default function UserDashboard() {
   const user = JSON.parse(localStorage.getItem('croporia_user') || 'null')
   const store = useStore()
   const [page, setPage] = useState('dashboard')
+  const [regFields, setRegFields] = useState([])
+
+  useEffect(() => {
+    const token = localStorage.getItem('croporia_token')
+    if (!token) return
+    fetch('http://localhost:5000/api/fields', { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.json()).then(data => { if (Array.isArray(data)) setRegFields(data) }).catch(() => {})
+  }, [])
+
   const pendingTasks = useMemo(() => store.tasks.data.filter(t => !t.done).length, [store.tasks.data])
   const overdueCount = useMemo(() => store.tasks.data.filter(t => !t.done && isOverdue(t.date)).length, [store.tasks.data])
   const PageComponent = PAGES[page] || DashboardPage
 
   if (!user) { navigate('/login'); return null }
+
+  if (!store.loaded) return (
+    <div className="min-h-screen bg-vanilla flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-10 h-10 border-4 border-olive/20 border-t-forest rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-ash text-sm font-medium">Loading your farm data...</p>
+      </div>
+    </div>
+  )
 
   return (
     <div className="min-h-screen bg-vanilla font-sans text-black-forest">
@@ -477,7 +528,7 @@ export default function UserDashboard() {
 
         {/* Main content */}
         <main className="flex-1 px-6 py-6 pb-16 max-w-5xl">
-          <PageComponent store={store} onNav={setPage} />
+          <PageComponent store={store} onNav={setPage} regFields={regFields} />
         </main>
       </div>
     </div>

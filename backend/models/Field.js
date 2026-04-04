@@ -30,6 +30,8 @@ const fieldSchema = new mongoose.Schema({
     status: { type: String, enum: ['Planned', 'Sowed', 'Harvested'], default: 'Planned' },
     sowDate: Date
   }],
+  waterSource: { type: String, default: '' },
+  notes: { type: String, default: '' },
   createdAt: {
     type: Date,
     default: Date.now,

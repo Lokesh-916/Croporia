@@ -26,6 +26,11 @@ class Settings(BaseSettings):
     validation_alias=AliasChoices("PLANT_ID_API_KEY", "CROPORIA_PLANT_ID_API_KEY"),
   )
 
+  # Curated Feed
+  gnews_api_key: str | None = Field(default=None, validation_alias="GNEWS_API_KEY")
+  data_gov_in_api_key: str | None = Field(default=None, validation_alias="DATA_GOV_IN_API_KEY")
+  jwt_secret: str | None = Field(default=None, validation_alias="JWT_SECRET")
+
   class Config:
     env_file = str(Path(__file__).resolve().parents[1] / ".env")
     env_file_encoding = "utf-8"

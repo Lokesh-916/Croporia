@@ -55,7 +55,14 @@ export default function CropWiki() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState('All')
+  const [visible, setVisible] = useState(true)
   const categories = ['All', 'Vegetable', 'Fruit', 'Field Crop', 'Herbs & Spices']
+
+  const switchCategory = (cat) => {
+    if (cat === activeCategory) return
+    setVisible(false)
+    setTimeout(() => { setActiveCategory(cat); setVisible(true) }, 220)
+  }
 
   const getCatMeta = (cat) => {
     switch (cat.toLowerCase()) {
@@ -90,12 +97,13 @@ export default function CropWiki() {
           <h1 className="font-cinzel text-4xl md:text-5xl font-black text-white tracking-tight mb-3">Know your <span className="text-willow">crop.</span></h1>
           <p className="text-tea text-base mb-6 max-w-xl">Real costs. Real conditions. No guesswork. 43 Indian crops all in one place.</p>
           <div className="flex flex-wrap gap-2 mb-4">
-            {categories.map(cat => <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-5 py-1.5 rounded-full text-[11px] uppercase tracking-widest font-bold transition-all ${activeCategory === cat ? 'bg-willow text-black-forest' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>{cat}</button>)}
+            {categories.map(cat => <button key={cat} onClick={() => switchCategory(cat)} className={`px-5 py-1.5 rounded-full text-[11px] uppercase tracking-widest font-bold transition-all ${activeCategory === cat ? 'bg-willow text-black-forest' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>{cat}</button>)}
           </div>
           <input type="text" placeholder="Search crops..." value={search} onChange={e => setSearch(e.target.value)} className="mt-2 bg-white/10 border border-white/20 text-white placeholder:text-white/40 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-willow/60 w-full max-w-xs" />
         </div>
       </section>
       <main className="max-w-6xl mx-auto px-8 py-8 space-y-14 pb-20">
+        <div style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(10px)', transition: 'opacity 0.22s ease, transform 0.22s ease' }}>
         {loading ? (
           <div className="flex justify-center py-24"><div className="w-10 h-10 border-4 border-olive/20 border-t-forest rounded-full animate-spin" /></div>
         ) : filteredCrops.length > 0 ? sortedCats.map(catName => {
@@ -162,6 +170,7 @@ export default function CropWiki() {
             <button onClick={() => { setSearch(''); setActiveCategory('All') }} className="text-forest font-bold text-sm underline underline-offset-4">Reset Filters</button>
           </div>
         )}
+        </div>
       </main>
       <footer className="py-8 border-t border-olive/20 text-center bg-black-forest">
         <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Croporia - Crop Wiki - 2026</p>

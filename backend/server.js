@@ -15,6 +15,7 @@ app.use(express.json({ limit: '10mb' }));
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/fields', require('./routes/fields'));
+app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/community', require('./routes/community'));
 app.use('/api/experts', require('./routes/experts'));
 app.use('/api/market/listings', require('./routes/listings'));

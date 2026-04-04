@@ -24,6 +24,7 @@ import Predictor from './pages/predictor'
 import Learn from './pages/learn'
 import Login from './pages/auth/login'
 import Signup from './pages/auth/signup'
+import FeedPage from './pages/feed'
 
 function App() {
   return (
@@ -39,13 +40,14 @@ function App() {
           <Route path="/predictor" element={<Predictor />} />
           <Route path="/learn" element={<Learn />} />
           <Route path="/experts" element={<Experts />} />
-          <Route path="/expert-dashboard" element={<ProtectedRoute><ExpertDashboard /></ProtectedRoute>} />
-          <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
+          <Route path="/expert-dashboard" element={<ProtectedRoute requiredRole="Expert"><ExpertDashboard /></ProtectedRoute>} />
+          <Route path="/user-dashboard" element={<ProtectedRoute requiredRole="Farmer"><UserDashboard /></ProtectedRoute>} />
           <Route path="/assistant" element={<Assistant />} />
           <Route path="/pest-health" element={<PestHealth />} />
           <Route path="/market" element={<Market />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/feed" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
           <Route path="/community" element={<ProtectedRoute><CommunityIndex /></ProtectedRoute>} />
           <Route path="/fields" element={<ProtectedRoute><FieldsIndex /></ProtectedRoute>} />
           <Route path="/fields/new" element={<ProtectedRoute><FieldNew /></ProtectedRoute>} />

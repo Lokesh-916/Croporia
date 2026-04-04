@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import numpy as np
 import pandas as pd
 from fastapi import FastAPI, File, HTTPException, UploadFile
@@ -9,6 +10,9 @@ from pydantic import BaseModel, Field
 from config import settings
 from plant_id import assess_health
 from rag import rag_pipeline
+from feed_router import router as feed_router
+
+logging.basicConfig(level=logging.INFO)
 
 
 class IngestResponse(BaseModel):
@@ -45,6 +49,7 @@ class ConditionSuggestion(BaseModel):
   name: str = Field(description="Disease/condition name (e.g. Fungi, water-related issue)")
   local_name: str | None = None
   probability: float = Field(description="Confidence 0–1 that this condition is present")
+  redundant: bool = False
   description: str | None = Field(default=None, description="Short explanation of the condition")
   common_names: list[str] = Field(default_factory=list, description="Common names (e.g. pests, overwatering)")
   classification: list[str] = Field(default_factory=list, description="Category hierarchy (e.g. Fungi, Animalia)")
@@ -52,13 +57,13 @@ class ConditionSuggestion(BaseModel):
   treatment: DiseaseTreatment = Field(default_factory=DiseaseTreatment, description="What to do: biological, chemical, prevention")
   learn_more_url: str | None = Field(default=None, description="Link to more info (e.g. Wikipedia)")
   entity_id: str | None = None
+  similar_images: list[dict] = Field(default_factory=list)
 
 
 class PlantHealthResponse(BaseModel):
-  conditions: list[ConditionSuggestion] = Field(
-    default_factory=list,
-    description="Detected pest/disease names and conditions (most likely first), with description and treatment",
-  )
+  conditions: list[ConditionSuggestion] = Field(default_factory=list)
+  is_healthy: bool | None = None
+  is_healthy_probability: float | None = None
 
 
 app = FastAPI(
@@ -78,6 +83,8 @@ app.add_middleware(
   allow_methods=["*"],
   allow_headers=["*"],
 )
+
+app.include_router(feed_router)
 
 
 @app.get("/health", tags=["system"])
@@ -164,6 +171,8 @@ def plant_health_assessment(image: UploadFile = File(..., description="Plant or 
 
   return PlantHealthResponse(
     conditions=[ConditionSuggestion(**c) for c in result["conditions"]],
+    is_healthy=result.get("is_healthy"),
+    is_healthy_probability=result.get("is_healthy_probability"),
   )
 
 

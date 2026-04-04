@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function CropDetail() {
@@ -58,7 +58,8 @@ export default function CropDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] text-gray-900 font-sans pb-20">
+    <div className="min-h-screen bg-[#FDFCFB] text-gray-900 font-sans pb-20" style={{animation:'fadeInPage .45s ease both'}}>
+      <style>{`@keyframes fadeInPage{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}`}</style>
       {/* Top Section - Hero Style */}
       <div className="bg-[#2D5A27] text-[#FDFCFB] pt-12 pb-24 px-6 md:px-12 relative overflow-hidden">
         {/* Subtle Leaf Pattern Background */}

@@ -69,6 +69,12 @@ function PracticeCard({ practice, cat }) {
 
 export default function PracticesIndex() {
   const bannerRefs = useRef([])
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   useEffect(() => {
     const observer = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)' } }), { threshold: 0.1 })
     bannerRefs.current.forEach(el => el && observer.observe(el))
@@ -87,10 +93,10 @@ export default function PracticesIndex() {
           </div>
           <div className="flex gap-3 shrink-0">
             {Object.values(PRACTICES).map(cat => (
-              <a key={cat.label} href={`#${cat.label.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')}`} className="flex flex-col items-center gap-2 px-5 py-4 rounded-xl transition-all hover:bg-white/10 cursor-pointer bg-white/5 border border-white/10">
+              <button key={cat.label} onClick={() => scrollToSection(cat.label.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''))} className="flex flex-col items-center gap-2 px-5 py-4 rounded-xl transition-all hover:bg-white/10 cursor-pointer bg-white/5 border border-white/10">
                 <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-black bg-white/20 text-white">{cat.number}</div>
                 <span className="text-[10px] font-bold text-white/60 whitespace-nowrap">{cat.label}</span>
-              </a>
+              </button>
             ))}
           </div>
         </div>

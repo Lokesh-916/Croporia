@@ -193,7 +193,8 @@ export default function PracticeDetail() {
     : ALL_PRACTICES.filter(p => p.category === practice.category && p.name !== practice.name).slice(0, 3)
 
   return (
-    <div className="bg-vanilla min-h-screen font-sans text-black-forest">
+    <div className="bg-vanilla min-h-screen font-sans text-black-forest" style={{animation:'fadeInPage .45s ease both'}}>
+      <style>{`@keyframes fadeInPage{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}`}</style>
       <Navbar />
       <div className="max-w-4xl mx-auto px-6 py-10 pb-20">
         <Link to="/practices" className="inline-flex items-center gap-2 text-[12px] font-semibold text-ash hover:text-black-forest transition-colors mb-8 uppercase tracking-wider">
@@ -299,7 +300,7 @@ export default function PracticeDetail() {
               const pd = diffStyle(p.difficulty)
               return (
                 <Link key={p.name} to={`/practices/${toSlug(p.name)}`}>
-                  <div className="bg-white rounded-2xl overflow-hidden cursor-pointer transition-all hover:-translate-y-1 hover:shadow-md border border-olive/20">
+                  <div className="bg-white rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-md border border-olive/20">
                     <div className="h-1.5" style={{ backgroundColor: pc.color }} />
                     <div className="p-4">
                       <p className="font-cinzel text-[15px] text-black-forest mb-1">{p.name}</p>
