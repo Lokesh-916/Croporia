@@ -1,39 +1,68 @@
-# Croporia — Smart Farming Platform
+<div align="center">
 
-One stop solution for the next generation of Indian farmers.
+<img src="preview.png" alt="Croporia Preview" width="100%" style="border-radius: 12px;" />
 
-## What is Croporia?
+<br/><br/>
 
-Croporia is a full-stack farming companion that combines crop knowledge, AI assistance, market intelligence, and expert guidance into a single unified platform.
+<img src="public/organic.png" alt="Croporia Logo" width="60" />
+
+# Croporia
+
+### The Smart Farming Platform Built for India's Next Generation of Farmers
+
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb)](https://mongodb.com)
+[![Groq](https://img.shields.io/badge/Groq-LLaMA_3.3_70B-F55036?style=flat-square)](https://groq.com)
+[![Tailwind](https://img.shields.io/badge/Tailwind-v4-38BDF8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
+
+</div>
 
 ---
 
-## Features
+Croporia is a full-stack farming intelligence platform that puts AI, market data, expert knowledge, and field management into one seamless experience — purpose-built for Indian farmers.
 
-| Feature | Description |
-|---|---|
-| Crop Wiki | 43+ Indian crop profiles with soil, season, cost, and process data |
-| Farming Practices | Traditional, tech-driven, and organic practice guides |
-| My Farm | Register and track your fields, soil data, and crop plans |
-| Crop Yield Predictor | AI-powered yield and revenue forecasting |
-| Climate Simulator | Simulate weather scenarios and see crop impact |
-| Pest & Disease Scanner | Upload a leaf photo — Plant.id API diagnoses it instantly |
-| Smart Learning | 5 deep-dive courses with lessons, insights, and quizzes |
-| Talk to Experts | Connect with certified agronomists, send messages |
-| Community | Post updates, reply, bookmark, ask experts |
-| Crop Market | Buy and sell crops directly with farmers nearby |
-| Crop Monetizer | Hold-or-sell forecast — should you sell now or wait 14 days? |
-| AI Farm Assistant | RAG-powered chatbot over your farming knowledge base |
+From diagnosing a diseased leaf with a photo to forecasting whether to hold or sell your harvest, Croporia handles the complexity so farmers can focus on what matters: growing.
+
+---
+
+## What It Does
+
+**Crop Wiki** — 43+ detailed Indian crop profiles covering soil type, season, climate, germination timelines, harvest windows, estimated per-acre expenses, cultivation steps, labour needs, and critical watchouts.
+
+**My Farm** — Register and manage your fields. Track soil data, crop plans, and field history in one place.
+
+**AI Farm Assistant** — A RAG-powered chatbot built on LangChain + Groq (LLaMA 3.3 70B) with a FAISS vector store over a curated Indian farming knowledge base. Ask anything, get grounded answers.
+
+**Pest & Disease Scanner** — Upload a leaf photo. The Plant.id API identifies the disease, severity, and treatment recommendations instantly.
+
+**Crop Yield Predictor** — Input your field parameters and get AI-powered yield and revenue forecasts before you sow.
+
+**Climate Simulator** — Simulate rainfall, temperature, and humidity scenarios and see how they impact your chosen crop.
+
+**Crop Monetizer** — Hold-or-sell intelligence. Forecasts price movement over 14 days so you know exactly when to take your harvest to market.
+
+**Farming Practices** — Guides on traditional, tech-driven, and organic farming methods with actionable steps.
+
+**Smart Learning** — 5 structured courses with lessons, insights, and quizzes to level up farming knowledge.
+
+**Talk to Experts** — Browse certified agronomists, view their profiles, and send direct messages.
+
+**Community** — Post updates, reply to threads, bookmark posts, and ask experts questions in a farmer-first feed.
+
+**Crop Market** — A peer-to-peer marketplace to buy and sell crops directly with nearby farmers.
+
+**Curated Feed** — Personalised daily feed with mandi prices, weather, govt schemes, agri news, irrigation advisories, and demand insights.
 
 ---
 
 ## Tech Stack
 
-**Frontend** — React 19, Vite, Tailwind CSS v4, Lucide Icons, Framer Motion
-
-**Node Backend** — Express, MongoDB (Mongoose), JWT auth, bcrypt
-
-**Python Backend** — FastAPI, LangChain v1, Groq (llama-3.3-70b), HuggingFace embeddings, FAISS, Plant.id API
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, Vite, Tailwind CSS v4, Framer Motion, Lucide Icons |
+| Node Backend | Express.js, MongoDB Atlas (Mongoose), JWT, bcrypt |
+| Python Backend | FastAPI, LangChain v1, Groq (LLaMA 3.3 70B), HuggingFace Embeddings, FAISS, Plant.id API |
 
 ---
 
@@ -41,28 +70,36 @@ Croporia is a full-stack farming companion that combines crop knowledge, AI assi
 
 ```
 Croporia/
-├── src/                    # React frontend
-│   ├── pages/              # All page components
-│   ├── components/         # Navbar, FloatingChatbot, ProtectedRoute
-│   └── context/            # ProgressContext for learning
-├── backend/                # Node.js / Express API
-│   ├── models/             # User, Field, Post, CropListing
-│   └── routes/             # auth, fields, community, experts, market
-├── python-backend/         # FastAPI service
-│   ├── main.py             # All endpoints (RAG, plant-health, monetizer)
-│   ├── rag.py              # LangChain RAG pipeline (Groq + FAISS)
-│   ├── plant_id.py         # Plant.id health assessment
-│   └── config.py           # Settings (reads from root .env)
-└── public/                 # Static assets, simulator, predictor
+├── src/                        # React frontend
+│   ├── pages/                  # All route-level page components
+│   ├── components/             # Navbar, FloatingChatbot, UI primitives
+│   └── context/                # ProgressContext (learning progress)
+├── backend/                    # Node.js / Express API (port 5000)
+│   ├── models/                 # User, Field, Post, CropListing, DashboardData
+│   └── routes/                 # auth, fields, community, experts, market
+├── python-backend/             # FastAPI service (port 8000)
+│   ├── main.py                 # All endpoints
+│   ├── rag.py                  # LangChain RAG pipeline
+│   ├── plant_id.py             # Plant.id integration
+│   ├── feed_service.py         # Curated feed data aggregation
+│   └── vectorstore/            # FAISS index (pre-built)
+└── public/                     # Static assets, simulator, predictor
 ```
 
 ---
 
-## Getting Started
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- Python 3.10+
+- MongoDB Atlas account
+- API keys: Groq, Plant.id
 
 ### 1. Environment Variables
 
-Create a `.env` file at the project root:
+Create a `.env` at the project root:
 
 ```env
 MONGODB_URI=your_mongodb_atlas_uri
@@ -80,26 +117,26 @@ npm install
 # Node backend
 cd backend && npm install
 
-# Python backend
+# Python backend (use the bundled venv)
 cd python-backend && .venv\Scripts\pip install -r requirements.txt
 ```
 
-### 3. Run All Services
+### 3. Run All Three Services
 
 Open 3 terminals:
 
 ```bash
-# Terminal 1 — Node backend (port 5000)
+# Terminal 1 — Node API (port 5000)
 cd backend && node server.js
 
-# Terminal 2 — Python backend (port 8000)
+# Terminal 2 — Python API (port 8000)
 cd python-backend && .venv\Scripts\uvicorn main:app --reload --port 8000
 
 # Terminal 3 — Frontend (port 5173)
 npm run dev
 ```
 
-Then open `http://localhost:5173`
+Visit `http://localhost:5173`
 
 ### 4. Seed Expert Accounts (optional)
 
@@ -107,31 +144,43 @@ Then open `http://localhost:5173`
 cd backend && node seedExperts.js
 ```
 
-Creates 4 expert accounts. Login with password: `Expert@123`
+Creates 4 expert accounts. Login password: `Expert@123`
 
 ---
 
 ## User Roles
 
-**Farmer** — Full access to all features including My Farm, Market, Simulator, Predictor
+**Farmer** — Full platform access: My Farm, Market, Simulator, Predictor, Community, Feed, Assistant.
 
-**Expert** — Different navbar with Dashboard, messages inbox, peer expert panel. No My Farm access.
+**Expert** — Dedicated dashboard with message inbox and peer expert panel. No My Farm access.
 
 ---
 
-## API Endpoints
+## API Reference
 
-### Node Backend (port 5000)
-- `POST /api/auth/register` — Register (Farmer or Expert)
-- `POST /api/auth/login` — Login
-- `GET/POST /api/fields` — Field management (auth required)
-- `GET/POST /api/community/posts` — Community feed
-- `GET/POST/DELETE /api/market/listings` — Crop marketplace
-- `GET /api/experts` — List expert profiles
+### Node Backend — `localhost:5000`
 
-### Python Backend (port 8000)
-- `POST /chat` — RAG farming assistant
-- `POST /plant-health` — Pest/disease detection
-- `POST /ingest` — Re-index Farming_Data_RAG.md
-- `POST /monetizer/predict` — Hold-or-sell price forecast
-- `GET /monetizer/crops` — List supported crops
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/register` | Register as Farmer or Expert |
+| POST | `/api/auth/login` | Login |
+| GET/POST | `/api/fields` | Field management (auth required) |
+| GET/POST | `/api/community/posts` | Community feed |
+| GET/POST/DELETE | `/api/market/listings` | Crop marketplace |
+| GET | `/api/experts` | List expert profiles |
+
+### Python Backend — `localhost:8000`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/chat` | RAG farming assistant |
+| POST | `/plant-health` | Pest & disease detection |
+| POST | `/monetizer/predict` | Hold-or-sell price forecast |
+| GET | `/monetizer/crops` | Supported crops list |
+| POST | `/ingest` | Re-index the RAG knowledge base |
+
+---
+
+<div align="center">
+  <sub>Built with care for Indian farmers. Croporia — grow smarter.</sub>
+</div>
